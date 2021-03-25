@@ -1,6 +1,7 @@
 package controller.net;
 
 import controller.EventHandler;
+import controller.SystemClock;
 import controller.action.ActionBoard;
 import data.communication.GameControlReturnData;
 import data.Rules;
@@ -67,7 +68,7 @@ public class RobotWatcher
         if (number <= 0 || number > Rules.league.teamSize) {
             return;
         }
-        instance.robotsLastAnswer[team][number-1] = System.currentTimeMillis();
+        instance.robotsLastAnswer[team][number-1] = SystemClock.getInstance().getCurrentTimeMillis();
         if (instance.robotsLastMessage[team][number-1] != gameControlReturnData.message) {
             instance.robotsLastMessage[team][number-1] = gameControlReturnData.message;
             if ((gameControlReturnData.message == PlayerResponses.MAN_PENALISE)
@@ -87,7 +88,7 @@ public class RobotWatcher
      */
     public static synchronized RobotOnlineStatus[][] updateRobotOnlineStatus()
     {
-        long currentTime = System.currentTimeMillis();
+        long currentTime = SystemClock.getInstance().getCurrentTimeMillis();
         int robotsOffline;
         for (int i=0; i<2; i++) {
             robotsOffline = 0;
@@ -114,6 +115,6 @@ public class RobotWatcher
     
     public static synchronized void updateCoach(byte team)
     {
-        instance.robotsLastAnswer[team][Rules.league.teamSize] = System.currentTimeMillis();
+        instance.robotsLastAnswer[team][Rules.league.teamSize] = SystemClock.getInstance().getCurrentTimeMillis();
     }
 }

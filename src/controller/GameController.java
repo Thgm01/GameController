@@ -266,10 +266,10 @@ public class GameController {
 
         final File logDir = new File(LOG_DIRECTORY);
         if (!logDir.exists() && !logDir.mkdirs()) {
-            Log.init("log_" + df.format(new Date(System.currentTimeMillis())) + ".txt");
+            Log.init("log_" + df.format(new Date(SystemClock.getInstance().getCurrentTimeMillis())) + ".txt");
         } else {
             final File logFile = new File(logDir,
-                    "log_" + df.format(new Date(System.currentTimeMillis())) + ".txt");
+                    "log_" + df.format(new Date(SystemClock.getInstance().getCurrentTimeMillis())) + ".txt");
             Log.init(logFile.getPath());
         }
         Log.toFile("League = " + Rules.league.leagueName);
