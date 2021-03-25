@@ -11,6 +11,7 @@ import controller.ui.ui.composites.HL_DropIn;
 import controller.ui.KeyboardListener;
 import controller.ui.setup.StartInput;
 import controller.ui.ui.composites.HL_GUI;
+import controller.ui.ui.composites.HL_SimGui;
 import data.*;
 import data.communication.GameControlData;
 import data.states.AdvancedData;
@@ -289,10 +290,14 @@ public class GameController {
                 + " (" + data.team[1].teamColor + ")");
 
 
+        boolean isSim = Rules.league.leagueDirectory.equals("hl_sim");
 
         GCGUI gui;
         if (Rules.league.leagueDirectory.equals("hl_dropin")){
             gui = new HL_DropIn(gpd.getFullScreen(), data, gpd);
+        }
+        else if (isSim){
+            gui = new HL_SimGui(gpd.getFullScreen(), data, gpd);
         }
         else{
             gui = new HL_GUI(gpd.getFullScreen(), data, gpd);

@@ -3,7 +3,7 @@ package controller;
 public class SystemClock {
 
     private static SystemClock instance;
-    private long startTime = System.currentTimeMillis();
+    private long currentTime = 0;
 
     /**
      * Returns the instance of the singleton. If the Clock wasn't initialized once before, a new instance will
@@ -21,6 +21,10 @@ public class SystemClock {
 
 
     public long getCurrentTimeMillis() {
-        return (long) (startTime + ((System.currentTimeMillis() - startTime) / 5.0));
+        return (long) (currentTime);
+    }
+
+    public synchronized void setTime(long time) {
+        this.currentTime = time;
     }
 }
