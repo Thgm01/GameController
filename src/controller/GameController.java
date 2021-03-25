@@ -192,21 +192,6 @@ public class GameController {
             System.exit(-1);
         }
 
-
-        //REST API
-        controller.net.RestServiceApplication restService = null;
-        try {
-            restService = new controller.net.RestServiceApplication();
-            restService.start();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null,
-                    "Error while setting up GameController on port: " + GameControlData.GAMECONTROLLER_RETURNDATA_PORT + ".",
-                    "Error on configured port",
-                    JOptionPane.ERROR_MESSAGE);
-            Log.error("fatal: " + e.getMessage());
-            System.exit(-1);
-        }
-
         //SPLStandardMessageReceiver
         teamcomm.net.SPLStandardMessageReceiver splStandardMessageReceiver = null;
         try {
