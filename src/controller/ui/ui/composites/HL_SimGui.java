@@ -9,14 +9,13 @@ import data.states.GamePreparationData;
 import data.values.Side;
 
 import javax.swing.*;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 
 public class HL_SimGui extends AbstractUI {
     private BlockingQueue<String> commandQueue = new LinkedBlockingQueue<String>();
+    private BlockingQueue<String> returnCommandQueue = new LinkedBlockingQueue<String>();
 
     private ButtonGroup kickOffGroup;
 
@@ -24,9 +23,7 @@ public class HL_SimGui extends AbstractUI {
         super(fullscreen, data, gamePrepData);
 
         try {
-            ServerSocket mysocket = new ServerSocket(8750);
-            Socket sock = mysocket.accept();
-            AutoRefServer server=new AutoRefServer(sock,commandQueue);
+            AutoRefServer server=new AutoRefServer(commandQueue, returnCommandQueue);
 
             Thread serverThread=new Thread(server);
             serverThread.start();
@@ -81,6 +78,8 @@ public class HL_SimGui extends AbstractUI {
         layout.add(.3, .11, .4, .75, center_panel);
         layout.add(.71, .11, .28, .75, right_team_panel);
 
+        //Setup Simulator Update Handler
+        setupSimulatorComponent();
 
         GameMetaInfo meta_info = new GameMetaInfo(initialData, gamePrepData);
         elementsReceivingUpdates.add(meta_info);
@@ -138,5 +137,10 @@ public class HL_SimGui extends AbstractUI {
 
         right_team_panel.add(0.0, 0.0, 1.0, 0.8, rl_right);
         right_team_panel.add(0.0, 0.8, 1.0, 0.2, ta_right);
+    }
+
+    private void setupSimulatorComponent() {
+        SimulatorUpdateComponent sim = new SimulatorUpdateComponent(commandQueue, returnCommandQueue);
+        elementsReceivingUpdates.add(sim);
     }
 }

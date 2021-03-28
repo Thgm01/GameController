@@ -4,6 +4,8 @@ public class SystemClock {
 
     private static SystemClock instance;
     private long currentTime = 0;
+    private static boolean systemTime = true;
+
 
     /**
      * Returns the instance of the singleton. If the Clock wasn't initialized once before, a new instance will
@@ -19,9 +21,17 @@ public class SystemClock {
         return instance;
     }
 
+    /**
+     * Sets the mode of the GameController to not use the real time but a provided time
+     */
+    public static void setSimulatedTime() {
+        systemTime = false;
+    }
+
 
     public long getCurrentTimeMillis() {
-        return (long) (currentTime);
+        if (systemTime) { return System.currentTimeMillis(); }
+        else { return (long) (currentTime); }
     }
 
     public synchronized void setTime(long time) {

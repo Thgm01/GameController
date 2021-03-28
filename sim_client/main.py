@@ -12,38 +12,58 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
 
     start = time.time()
-    ready, set, play = False, False, False
+    ready, set, play, penalized, scored, kickoff = False, False, False, False, False, False
 
-    PACKAGE_NR:INSTRUCTION:TEAM:PLAYER:PENALTY
-    1:CLOCK:13
-    2:STATE:READY
-    3:PENALTY:0:2:killed_robot
-    4:SCORE:0
+    # API
+    #PACKAGE_NR:TYPE:DETAIL
 
+    #num:CLOCK:TimeInMilliSeconds
+    #num:STATE:GameState (READY,SET,PLAY,FINISH)
+    #num:PENALTY:team_num:robot_num:Offense (BALL_MANIPULATION, PICKUP, INCAPABLE, PHYSICAL_CONTACT)
+    #num:SCORE:team_num
+    #num:KICKOFF:team_num
+    #num:SIDE_LEFT:team:num
+
+    #RETURN: num:OK/ILLEGAL
+
+    message_numb = 0
 
     while True:
         delta = time.time() - start
 
-        clock_data = f'CLOCK:{int(delta * 3 * 1000)}\n'
+        clock_data = f'{message_numb}:CLOCK:{int(delta * 3 * 1000)}\n'
         print(clock_data)
 
         s.sendall(clock_data.encode('ascii'))
-        s.recv(1024)
+
+        if delta > 12 and not kickoff:
+            kickoff = True
+            s.sendall(f"{message_numb}:SIDE_LEFT:26\n".encode('ascii'))
 
         if delta > 3 and not ready:
             ready = True
-            s.sendall("STATE:READY\n".encode('ascii'))
-            s.recv(1024)
+            s.sendall(f"{message_numb}:STATE:READY\n".encode('ascii'))
 
         if delta > 7 and not set:
             set = True
-            s.sendall("STATE:SET\n".encode('ascii'))
-            s.recv(1024)
+            s.sendall(f"{message_numb}:STATE:SET\n".encode('ascii'))
 
         if delta > 12 and not play:
             play = True
-            s.sendall("STATE:PLAY\n".encode('ascii'))
-            s.recv(1024)
+            s.sendall(f"{message_numb}:STATE:PLAY\n".encode('ascii'))
 
+        if delta > 15 and play and not penalized:
+            penalized = True
+            s.sendall(f"{message_numb}:PENALTY:27:1:BALL_MANIPULATION\n".encode('ascii'))
+
+        if delta > 17 and play and not scored:
+            scored = True
+            s.sendall(f"{message_numb}:SCORE:27\n".encode('ascii'))
+
+        data = s.recv(1024)
+        if data:
+            print(data)
+
+        message_numb += 1
         time.sleep(0.2)
 

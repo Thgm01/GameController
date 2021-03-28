@@ -14,63 +14,67 @@ public class AutoRefServer implements Runnable
     Socket connectionSocket;
     BlockingQueue<String> commandQueue;
 
-    public AutoRefServer(Socket connectionSocket, BlockingQueue<String> commandQueue){
+    BlockingQueue<String> returnCommunicationQueue;
+
+    private final static int port = 8750;
+
+    public AutoRefServer(BlockingQueue<String> commandQueue, BlockingQueue<String> returnCommunicationQueue){
         try{
-            System.out.println("Client Got Connected  " );
             this.commandQueue = commandQueue;
-            this.connectionSocket = connectionSocket;
+            this.returnCommunicationQueue = returnCommunicationQueue;
         }catch(Exception e){
             e.printStackTrace();
         }
     }
 
-    public void run(){
-        try{
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionSocket.getOutputStream()));
-
-            // TODO - Always listen until connection is terminated
-            for (int i = 0; i < 100; i++){
-                String data1 = reader.readLine().trim();
-                String[] values = data1.split(":");
-
-                switch (values[0]){
-                    case "CLOCK":
-                        SystemClock.getInstance().setTime(Integer.parseInt(values[1]));
-                        break;
-                    case "STATE":
-                        switch(values[1]){
-                            case "READY":
-                                System.out.println("Before Ready");
-                                ActionBoard.ready.actionPerformed(null);
-                                System.out.println("After Ready");
-                                break;
-                            case "SET":
-                                ActionBoard.set.actionPerformed(null);
-                                break;
-                            case "PLAY":
-                                ActionBoard.play.actionPerformed(null);
-                                break;
-                            default:
-                                break;
-                        }
-                        break;
-                    default:
-                        break;
+    public void run() {
+        ServerSocket simulator_socket = null;
+        while (true) {
+            boolean isConnected;
+            try {
+                if (simulator_socket != null && simulator_socket.isBound()) {
+                    connectionSocket.close();
+                    simulator_socket.close();
                 }
+                simulator_socket = new ServerSocket(port);
+                this.connectionSocket = simulator_socket.accept();
+                isConnected = true;
+                System.out.println("Client Got Connected  ");
 
-                System.out.println("Got Command: " + data1);
-//                this.commandQueue.add(data1);
-                System.out.println("In queue.");
-                writer.write("Ok\n");
-                writer.flush();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionSocket.getOutputStream()));
+
+                while (isConnected) {
+                    if (returnCommunicationQueue.size() > 0) {
+                        String returnCommand = returnCommunicationQueue.poll();
+                        writer.write(returnCommand);
+                        writer.flush();
+                    }
+                    String data1 = reader.readLine();
+                    data1 = data1.trim();
+                    String[] values = data1.split(":");
+
+                    //Clock update is handled immediately, everything else is handled by a command queue
+                    if (values[1].equals("CLOCK")) {
+                        SystemClock.getInstance().setTime(Integer.parseInt(values[2]));
+                        this.returnCommunicationQueue.add(values[0] + ":OK");
+                    } else {
+                        this.commandQueue.add(data1);
+                    }
 
 
+                }
+                connectionSocket.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                isConnected = false;
+                try {
+                    connectionSocket.close();
+                } catch (IOException ioException) {
+                    ioException.printStackTrace();
+                }
             }
-
-            connectionSocket.close();
-        }catch(Exception e){
-            e.printStackTrace();
         }
     }
 }

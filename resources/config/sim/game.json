@@ -1,0 +1,10 @@
+{
+  "type": "NORMAL",
+  "class": "ADULT",
+  "blue": {
+    "id": 26
+  },
+  "red":{
+    "id": 27
+  }
+}

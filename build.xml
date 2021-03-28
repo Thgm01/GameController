@@ -52,6 +52,14 @@
                 <attribute name="Author" value="Michel Bartsch, Marcel Steinbeck, Thomas Roefer" />
             </manifest>
         </jar>
+        <jar destfile="${jar.dir}/GameControllerSimulator.jar" basedir="${classes.dir}" includes="${common_classes} controller/ teamcomm/">
+            <manifest>
+                <attribute name="Main-Class" value="controller.GameControllerSimulator"/>
+                <attribute name="Author" value="Maike Paetzel, Michel Bartsch, Marcel Steinbeck, Thomas Roefer" />
+                <attribute name="Class-Path" value="deps/json-simple-1.1.jar" />
+
+            </manifest>
+        </jar>
         <jar destfile="${jar.dir}/ProtocolHelper.jar" basedir="${classes.dir}" includes="${common_classes} controller/ teamcomm/net/">
             <manifest>
                 <attribute name="Main-Class" value="data.values.ProtocolHelper"/>

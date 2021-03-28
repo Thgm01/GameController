@@ -5,17 +5,17 @@ package data.hl;
  *
  * @author Michel-Zen
  */
-public class HLSimulation extends HL
+public class HLSimulationKid extends HL
 {
-    public HLSimulation()
+    public HLSimulationKid()
     {
         /** The league´s name this rules are for. */
-        leagueName = "HL Simulation";
+        leagueName = "HL Simulation KidSize";
         /** The league´s directory name with it´s teams and icons. */
-        leagueDirectory = "hl_sim";
+        leagueDirectory = "hl_sim_adult";
         /** How many robots are in a team. */
         teamSize = 4;
         /** How many robots of each team may play at one time. */
-        robotsPlaying = 2;
+        robotsPlaying = 4;
     }
 }
