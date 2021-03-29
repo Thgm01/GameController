@@ -7,24 +7,11 @@ HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 8750        # The port used by the server
 
 
-
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
 
     start = time.time()
     ready, set, play, penalized, scored, kickoff = False, False, False, False, False, False
-
-    # API
-    #PACKAGE_NR:TYPE:DETAIL
-
-    #num:CLOCK:TimeInMilliSeconds
-    #num:STATE:GameState (READY,SET,PLAY,FINISH)
-    #num:PENALTY:team_num:robot_num:Offense (BALL_MANIPULATION, PICKUP, INCAPABLE, PHYSICAL_CONTACT)
-    #num:SCORE:team_num
-    #num:KICKOFF:team_num
-    #num:SIDE_LEFT:team:num
-
-    #RETURN: num:OK/ILLEGAL
 
     message_numb = 0
 
