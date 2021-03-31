@@ -76,6 +76,9 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 }
                 else if ((int)data.team[1].teamNumber == team) {
                     side = 1;
+                } else {
+                    actionRejected(values[0]);
+                    break;
                 }
                 switch (values[4]) {
                     case "BALL_MANIPULATION":
@@ -117,6 +120,9 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 }
                 else if ((int)data.team[1].teamNumber == team) {
                     side = 1;
+                } else {
+                    actionRejected(values[0]);
+                    break;
                 }
                 if(ActionBoard.goalInc[side].isLegal(data)) {
                     ActionBoard.goalInc[side].perform(data);
@@ -131,6 +137,9 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 }
                 else if ((int)data.team[1].teamNumber == team) {
                     side = 1;
+                } else {
+                    actionRejected(values[0]);
+                    break;
                 }
                 if(ActionBoard.kickOff[side].isLegal(data)) {
                     ActionBoard.kickOff[side].perform(data);
@@ -145,6 +154,9 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                     side = 0;
                 } else if ((int) data.team[1].teamNumber == team) {
                     side = 1;
+                } else {
+                    actionRejected(values[0]);
+                    break;
                 }
                 //only perform the action if the team is actually on the right side
                 if (side == 1) {
