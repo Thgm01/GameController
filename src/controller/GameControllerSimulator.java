@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
+import javax.management.RuntimeErrorException;
 import javax.swing.*;
 
 
@@ -226,7 +227,7 @@ public class GameControllerSimulator {
 
         JSONParser parser = new JSONParser();
         String match_type = "";
-        String size_class = "";
+        String size_class = "KID";
         int blue_team_number = 0;
         int red_team_number = 0;
 
@@ -243,18 +244,20 @@ public class GameControllerSimulator {
             e.printStackTrace();
         }
 
+
+
         // Maybe those two can be merged somehow
         //GamePreparationData gpd = input.getGamePreparationData();
         GamePreparationData gpd = new GamePreparationData();
 
         gpd.switchRules(new HLSimulationKid());
         Rules.league = Rules.LEAGUES[3];
-        if (size_class == "ADULT") {
+        if (size_class.equals("ADULT")) {
             gpd.switchRules(new HLSimulationAdult());
             Rules.league = Rules.LEAGUES[4];
         }
 
-        if (match_type == "normal") {
+        if (match_type.equals("NORMAL")) {
             gpd.setFullTimeGame(false);
         }
 
@@ -267,8 +270,15 @@ public class GameControllerSimulator {
             else if (t.identifier == red_team_number) {
                 gpd.chooseTeam(0, t);
             }
-            //TODO: Handle if team number given is invalid
         }
+
+        if (gpd.getFirstTeam().getTeamInfo().identifier > 0 && gpd.getFirstTeam().getTeamInfo().identifier > 0) {
+            System.out.println("GameController setup of both teams successful");
+        } else {
+            throw new RuntimeException("Illegal team numbers provided in config file");
+        }
+
+
         AdvancedData data = new AdvancedData();
 
         data.team[0].initialize(gpd.getFirstTeam());
