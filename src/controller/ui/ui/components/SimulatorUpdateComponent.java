@@ -109,6 +109,7 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                     default:
                         break;
                 }
+                break;
             case "SCORE":
                 team = Integer.parseInt(values[2]);
                 if ((int)data.team[0].teamNumber == team) {
@@ -153,14 +154,21 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 break;
             }
             default:
+                actionInvalid(values[0]);
                 break;
         }
     }
 
     private void actionAccepted(String id) {
-        returnCommandQueue.add(id + ":OK");
+        returnCommandQueue.add(id + ":OK\n");
     }
+
     private void actionRejected(String id) {
-        returnCommandQueue.add(id + ":ILLEGAL");
+        returnCommandQueue.add(id + ":ILLEGAL\n");
     }
+
+    private void actionInvalid(String id) {
+        returnCommandQueue.add(id + ":INVALID\n");
+    }
+
 }

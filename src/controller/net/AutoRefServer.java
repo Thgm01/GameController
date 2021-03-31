@@ -32,7 +32,7 @@ public class AutoRefServer implements Runnable
         while (true) {
             boolean isConnected;
             try {
-                if (simulator_socket != null && simulator_socket.isBound()) {
+                if (simulator_socket != null && connectionSocket != null && simulator_socket.isBound()) {
                     connectionSocket.close();
                     simulator_socket.close();
                 }
@@ -45,11 +45,12 @@ public class AutoRefServer implements Runnable
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionSocket.getOutputStream()));
 
                 while (isConnected) {
-                    if (returnCommunicationQueue.size() > 0) {
+                    while (returnCommunicationQueue.size() > 0) {
                         String returnCommand = returnCommunicationQueue.poll();
                         writer.write(returnCommand);
                         writer.flush();
                     }
+
                     String data1 = reader.readLine();
                     data1 = data1.trim();
                     String[] values = data1.split(":");
