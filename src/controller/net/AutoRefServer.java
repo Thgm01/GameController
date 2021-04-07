@@ -60,7 +60,7 @@ public class AutoRefServer implements Runnable
                     //Clock update is handled immediately, everything else is handled by a command queue
                     if (values[1].equals("CLOCK")) {
                         SystemClock.getInstance().setTime(Integer.parseInt(values[2]));
-                        this.returnCommunicationQueue.add(values[0] + ":OK");
+                        this.returnCommunicationQueue.add(values[0] + ":OK\n");
                     } else {
                         this.commandQueue.add(data1);
                     }
