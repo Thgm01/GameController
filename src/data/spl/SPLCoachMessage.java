@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 import controller.EventHandler;
+import controller.SystemClock;
 
 public class SPLCoachMessage implements Serializable
 {
@@ -33,7 +34,7 @@ public class SPLCoachMessage implements Serializable
 
     public SPLCoachMessage()
     {
-        sendTime = generateSendIntervallForSPLCoachMessage() + System.currentTimeMillis();
+        sendTime = generateSendIntervallForSPLCoachMessage() + SystemClock.getInstance().getCurrentTimeMillis();
     }
 
     public byte[] toByteArray()
@@ -81,7 +82,7 @@ public class SPLCoachMessage implements Serializable
 
     public long getRemainingTimeToSend()
     {
-        long remainingTime = sendTime - System.currentTimeMillis();
+        long remainingTime = sendTime - SystemClock.getInstance().getCurrentTimeMillis();
         return remainingTime > 0 ? remainingTime : 0;
     }
 

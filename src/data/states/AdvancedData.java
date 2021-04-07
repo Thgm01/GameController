@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 import common.Log;
+import controller.SystemClock;
 import controller.action.ActionBoard;
 import data.PlayerInfo;
 import data.Rules;
@@ -186,7 +187,7 @@ public class AdvancedData extends GameControlData implements Cloneable
      */
     public long getTime()
     {
-        return manPause ? manWhenClockChanged : System.currentTimeMillis() + manTimeOffset;
+        return manPause ? manWhenClockChanged : SystemClock.getInstance().getCurrentTimeMillis() + manTimeOffset;
     }
     
     /**
@@ -289,7 +290,7 @@ public class AdvancedData extends GameControlData implements Cloneable
                 || (gameState == GameStates.READY || gameState == GameStates.SET)
                 && ((gameType == GameTypes.PLAYOFF) && Rules.league.playOffTimeStop || timeBeforeCurrentGameState == 0)
                 || gameState == GameStates.FINISHED
-                ? (int) ((timeBeforeCurrentGameState + manRemainingGameTimeOffset + (manPlay ? System.currentTimeMillis() - manWhenClockChanged : 0)) / 1000)
+                ? (int) ((timeBeforeCurrentGameState + manRemainingGameTimeOffset + (manPlay ? SystemClock.getInstance().getCurrentTimeMillis() - manWhenClockChanged : 0)) / 1000)
                 : real || (gameType != GameTypes.PLAYOFF && timeBeforeCurrentGameState > 0) || secGameState != SecondaryGameStates.NORMAL || gameState != GameStates.PLAYING
                 || getSecondsSince(whenCurrentGameStateBegan) >= Rules.league.delayedSwitchToPlaying 
                 ? getSecondsSince(whenCurrentGameStateBegan - timeBeforeCurrentGameState - manRemainingGameTimeOffset)

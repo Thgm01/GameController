@@ -1,6 +1,7 @@
 package teamcomm.net.logging;
 
 import common.Log;
+import controller.SystemClock;
 import data.communication.GameControlData;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,7 +76,7 @@ public class Logger {
 
             // Determine file name
             final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss-S");
-            final String fileName = "teamcomm_" + df.format(new Date(System.currentTimeMillis())) + (name == null || name.isEmpty() ? "" : ("_" + name)) + ".log";
+            final String fileName = "teamcomm_" + df.format(new Date(SystemClock.getInstance().getCurrentTimeMillis())) + (name == null || name.isEmpty() ? "" : ("_" + name)) + ".log";
 
             // Determine file path
             final File logDir = new File(LOG_DIRECTORY);
@@ -151,12 +152,12 @@ public class Logger {
                             Log.error("error while opening logfile: " + ex.getMessage());
                             error = true;
                         }
-                        beginTimestamp = System.currentTimeMillis();
+                        beginTimestamp = SystemClock.getInstance().getCurrentTimeMillis();
                     }
 
                     // Log object
                     try {
-                        logger.writeLong(System.currentTimeMillis() - beginTimestamp);
+                        logger.writeLong(SystemClock.getInstance().getCurrentTimeMillis() - beginTimestamp);
                         logger.writeBoolean(p != null);
                         if (p == null) {
                             logger.writeInt(getIDForClass(cls));

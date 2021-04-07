@@ -7,26 +7,33 @@ import controller.net.GameControlReturnDataReceiver;
 import controller.net.SPLCoachMessageReceiver;
 import controller.net.Sender;
 import controller.ui.GCGUI;
-import controller.ui.ui.composites.HL_DropIn;
 import controller.ui.KeyboardListener;
-import controller.ui.setup.StartInput;
+import controller.ui.ui.composites.HL_DropIn;
 import controller.ui.ui.composites.HL_GUI;
 import controller.ui.ui.composites.HL_SimGui;
 import data.*;
 import data.communication.GameControlData;
+import data.hl.HLSimulationAdult;
+import data.hl.HLSimulationKid;
 import data.states.AdvancedData;
 import data.states.GamePreparationData;
+import data.teams.TeamLoadInfo;
 import data.values.GameTypes;
+import org.json.simple.*;
+import org.json.simple.parser.JSONParser;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.concurrent.BlockingQueue;
+import javax.management.RuntimeErrorException;
 import javax.swing.*;
 
 
@@ -35,13 +42,15 @@ import javax.swing.*;
  *
  * The programm starts in this class. The main components are initialised here.
  */
-public class GameController {
+public class GameControllerSimulator {
 
     /**
      * The version of the GameController. Actually there are no dependencies,
      * but this should be the first thing to be written into the log file.
      */
     public static final String version = "GC2 1.4";
+
+    public static int port = 8750;
 
     /**
      * Relative directory of where logs are stored
@@ -54,6 +63,8 @@ public class GameController {
             + "\n  (-i | --interface) <interface>  set network interface (default is a connected IPv4 interface)"
             + "\n  (-l | --league) %s%sselect league (default is spl)"
             + "\n  (-w | --window)                 select window mode (default is fullscreen)"
+            + "\n  (-p | --port) <port>             set port the AutoReferee connects to (default is 8750)"
+            + "\n  (-c | --config) <path/to/game.json>   sets a custom game.json to launch the game from (uses the resource folder by default)"
             + "\n";
     private static final String COMMAND_INTERFACE = "--interface";
     private static final String COMMAND_INTERFACE_SHORT = "-i";
@@ -63,6 +74,19 @@ public class GameController {
     private static final String COMMAND_WINDOW_SHORT = "-w";
     private static final String COMMAND_TEST = "--test";
     private static final String COMMAND_TEST_SHORT = "-t";
+    private static final String COMMAND_PORT= "--port";
+    private static final String COMMAND_PORT_SHORT = "-p";
+    private static final String COMMAND_CONFIG= "--config";
+    private static final String COMMAND_CONFIG_SHORT = "-c";
+
+    /** Dynamically settable path to the config root folder */
+    private static final String CONFIG_ROOT = System.getProperty("CONFIG_ROOT", "");
+    /** The path to the leagues directories. */
+    private static final String PATH = CONFIG_ROOT + "config/";
+    /** The name of the config file. */
+    private static String CONFIG = PATH + "/sim/game.json";
+    /** The charset to read the config file. */
+    private final static String CHARSET = "UTF-8";
 
     /**
      * The program starts here.
@@ -100,6 +124,12 @@ public class GameController {
                 continue parsing;
             } else if (args[i].equals(COMMAND_TEST_SHORT) || args[i].equals(COMMAND_TEST)) {
                 testMode = true;
+                continue parsing;
+            } else if (args[i].equals(COMMAND_PORT_SHORT) || args[i].equals(COMMAND_PORT)) {
+                port = Integer.parseInt(args[++i]);
+                continue parsing;
+            } else if (args[i].equals(COMMAND_CONFIG_SHORT) || args[i].equals(COMMAND_CONFIG)) {
+                CONFIG = args[++i];
                 continue parsing;
             }
             String leagues = "";
@@ -208,19 +238,60 @@ public class GameController {
             System.exit(-1);
         }
 
-        //collect the start parameters and put them into the first data.
-        StartInput input = new StartInput(!windowMode);
 
-        while (!input.finished) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                System.exit(0);
+        JSONParser parser = new JSONParser();
+        String match_type = "";
+        String size_class = "KID";
+        int blue_team_number = 0;
+        int red_team_number = 0;
+
+        try {
+            Object obj = parser.parse(new FileReader(CONFIG));
+            JSONObject jsonObject = (JSONObject)obj;
+            match_type = (String)jsonObject.get("type");
+            size_class = (String)jsonObject.get("class");
+            JSONObject blue_team = (JSONObject)jsonObject.get("blue");
+            blue_team_number = Integer.parseInt(blue_team.get("id").toString());
+            JSONObject red_team = (JSONObject)jsonObject.get("red");
+            red_team_number = Integer.parseInt(red_team.get("id").toString());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+
+
+        // Maybe those two can be merged somehow
+        //GamePreparationData gpd = input.getGamePreparationData();
+        GamePreparationData gpd = new GamePreparationData();
+
+        gpd.switchRules(new HLSimulationKid());
+        Rules.league = Rules.LEAGUES[3];
+        if (size_class.equals("ADULT")) {
+            gpd.switchRules(new HLSimulationAdult());
+            Rules.league = Rules.LEAGUES[4];
+        }
+
+        if (match_type.equals("NORMAL")) {
+            gpd.setFullTimeGame(false);
+        }
+
+        ArrayList<TeamLoadInfo> available_teams = gpd.getAvailableTeams();
+
+        for (TeamLoadInfo t : available_teams) {
+            if (t.identifier == blue_team_number) {
+                gpd.chooseTeam(1, t);
+            }
+            else if (t.identifier == red_team_number) {
+                gpd.chooseTeam(0, t);
             }
         }
 
-        // Maybe those two can be merged somehow
-        GamePreparationData gpd = input.getGamePreparationData();
+        if (gpd.getFirstTeam().getTeamInfo().identifier > 0 && gpd.getFirstTeam().getTeamInfo().identifier > 0) {
+            System.out.println("GameController setup of both teams successful");
+        } else {
+            throw new RuntimeException("Illegal team numbers provided in config file");
+        }
+
 
         AdvancedData data = new AdvancedData();
 
@@ -230,13 +301,13 @@ public class GameController {
         data.kickOffTeam = (byte) gpd.getFirstTeam().getTeamInfo().identifier;
         data.colorChangeAuto = gpd.isAutoColorChange();
 
-
         data.gameType = Rules.league.dropInPlayerMode ? GameTypes.DROPIN
                 : gpd.isFullTimeGame() ? GameTypes.PLAYOFF: GameTypes.ROUNDROBIN;
         if (testMode) {
             Rules.league.delayedSwitchToPlaying = 0;
         }
 
+        SystemClock.setSimulatedTime();
 
         try {
             //sender
@@ -258,6 +329,7 @@ public class GameController {
                 spl.start();
             }
         } catch (Exception e) {
+            System.err.println(e);
             JOptionPane.showMessageDialog(null,
                     "Error while setting up GameController on port: " + GameControlData.GAMECONTROLLER_RETURNDATA_PORT + ".",
                     "Error on configured port",
@@ -285,28 +357,18 @@ public class GameController {
 
         //ui
         ActionBoard.init();
+
         Log.state(data, Teams.getNames(false)[data.team[0].teamNumber]
                 + " (" + data.team[0].teamColor
                 + ") vs " + Teams.getNames(false)[data.team[1].teamNumber]
                 + " (" + data.team[1].teamColor + ")");
 
-
-        boolean isSim = Rules.league.leagueDirectory.equals("hl_sim");
-
-        GCGUI gui;
-        if (Rules.league.leagueDirectory.equals("hl_dropin")){
-            gui = new HL_DropIn(gpd.getFullScreen(), data, gpd);
-        }
-        else{
-            gui = new HL_GUI(gpd.getFullScreen(), data, gpd);
-        }
+        GCGUI gui = new HL_SimGui(gpd.getFullScreen(), data, gpd, port);
 
         new KeyboardListener();
         EventHandler.getInstance().setGUI(gui);
         gui.update(data);
 
-        //input dispose
-        input.dispose();
 
         //clock runs until window is closed
         Clock.getInstance().start();

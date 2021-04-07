@@ -1,5 +1,6 @@
 package common;
 
+import controller.SystemClock;
 import data.states.AdvancedData;
 import java.io.File;
 import java.io.FileWriter;
@@ -80,7 +81,7 @@ public class Log
     public static void toFile(String s)
     {
         try{
-            instance.file.write(timestampFormat.format(new Date(System.currentTimeMillis()))+": "+s+"\n");
+            instance.file.write(timestampFormat.format(new Date(SystemClock.getInstance().getCurrentTimeMillis()))+": "+s+"\n");
             instance.file.flush();
         } catch (IOException e) {
             error("cannot write to logfile!");
@@ -212,7 +213,7 @@ public class Log
             if (instance.errorFile == null) {
                 instance.errorFile = new FileWriter(new File(instance.errorPath));
             }
-            instance.errorFile.write(timestampFormat.format(new Date(System.currentTimeMillis()))+": "+s+"\n");
+            instance.errorFile.write(timestampFormat.format(new Date(SystemClock.getInstance().getCurrentTimeMillis()))+": "+s+"\n");
             instance.errorFile.flush();
         } catch (IOException e) {
              System.err.println("cannot write to error file!");

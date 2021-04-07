@@ -1,5 +1,7 @@
 package data.states;
 
+import controller.SystemClock;
+
 import java.io.Serializable;
 
 public class ExtraClock implements Serializable {
@@ -9,13 +11,13 @@ public class ExtraClock implements Serializable {
     private String label;
 
     public ExtraClock(String label, int lifetime) {
-        this.start_time = System.currentTimeMillis();
+        this.start_time = SystemClock.getInstance().getCurrentTimeMillis();
         this.life_time = lifetime;
         this.label = label;
     }
 
     public ExtraClock(int lifetime) {
-        this.start_time = System.currentTimeMillis();
+        this.start_time = SystemClock.getInstance().getCurrentTimeMillis();
         this.life_time = lifetime;
         this.label = "Secondary Clock";
     }
@@ -33,7 +35,7 @@ public class ExtraClock implements Serializable {
     }
 
     public long getTime() {
-        return System.currentTimeMillis();
+        return SystemClock.getInstance().getCurrentTimeMillis();
     }
 
     public String getLabel(){

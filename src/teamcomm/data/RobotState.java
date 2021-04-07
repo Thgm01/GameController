@@ -1,5 +1,6 @@
 package teamcomm.data;
 
+import controller.SystemClock;
 import data.PlayerInfo;
 import data.spl.SPLStandardMessage;
 import java.util.LinkedList;
@@ -71,7 +72,7 @@ public class RobotState {
         if (message.playerNumValid) {
             playerNumber = (int) message.playerNum;
         }
-        lastMessageTimestamp = System.currentTimeMillis();
+        lastMessageTimestamp = SystemClock.getInstance().getCurrentTimeMillis();;
         synchronized (recentMessageTimestamps) {
             recentMessageTimestamps.addFirst(lastMessageTimestamp);
         }
@@ -110,7 +111,7 @@ public class RobotState {
         synchronized (recentMessageTimestamps) {
             final ListIterator<Long> it = recentMessageTimestamps.listIterator(recentMessageTimestamps.size());
 
-            final long curTime = System.currentTimeMillis();
+            final long curTime = SystemClock.getInstance().getCurrentTimeMillis();
             while (!it.hasPrevious() && curTime - it.previous() > AVERAGE_CALCULATION_TIME) {
                 it.remove();
             }
@@ -142,7 +143,7 @@ public class RobotState {
      * @return connection status
      */
     public ConnectionStatus getConnectionStatus() {
-        final long timeSinceLastMessage = System.currentTimeMillis() - lastMessageTimestamp;
+        final long timeSinceLastMessage = SystemClock.getInstance().getCurrentTimeMillis() - lastMessageTimestamp;
         for (final ConnectionStatus c : ConnectionStatus.values()) {
             if (timeSinceLastMessage >= c.threshold) {
                 return c;
