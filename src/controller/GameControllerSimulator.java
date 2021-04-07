@@ -50,6 +50,8 @@ public class GameControllerSimulator {
      */
     public static final String version = "GC2 1.4";
 
+    public static int port = 8750;
+
     /**
      * Relative directory of where logs are stored
      */
@@ -61,6 +63,8 @@ public class GameControllerSimulator {
             + "\n  (-i | --interface) <interface>  set network interface (default is a connected IPv4 interface)"
             + "\n  (-l | --league) %s%sselect league (default is spl)"
             + "\n  (-w | --window)                 select window mode (default is fullscreen)"
+            + "\n  (-p | --port) <port>             set port the AutoReferee connects to (default is 8750)"
+            + "\n  (-c | --config) <path/to/game.json>   sets a custom game.json to launch the game from (uses the resource folder by default)"
             + "\n";
     private static final String COMMAND_INTERFACE = "--interface";
     private static final String COMMAND_INTERFACE_SHORT = "-i";
@@ -70,13 +74,17 @@ public class GameControllerSimulator {
     private static final String COMMAND_WINDOW_SHORT = "-w";
     private static final String COMMAND_TEST = "--test";
     private static final String COMMAND_TEST_SHORT = "-t";
+    private static final String COMMAND_PORT= "--port";
+    private static final String COMMAND_PORT_SHORT = "-p";
+    private static final String COMMAND_CONFIG= "--config";
+    private static final String COMMAND_CONFIG_SHORT = "-c";
 
     /** Dynamically settable path to the config root folder */
     private static final String CONFIG_ROOT = System.getProperty("CONFIG_ROOT", "");
     /** The path to the leagues directories. */
     private static final String PATH = CONFIG_ROOT + "config/";
     /** The name of the config file. */
-    private static final String CONFIG = "sim/game.json";
+    private static String CONFIG = PATH + "/sim/game.json";
     /** The charset to read the config file. */
     private final static String CHARSET = "UTF-8";
 
@@ -116,6 +124,12 @@ public class GameControllerSimulator {
                 continue parsing;
             } else if (args[i].equals(COMMAND_TEST_SHORT) || args[i].equals(COMMAND_TEST)) {
                 testMode = true;
+                continue parsing;
+            } else if (args[i].equals(COMMAND_PORT_SHORT) || args[i].equals(COMMAND_PORT)) {
+                port = Integer.parseInt(args[++i]);
+                continue parsing;
+            } else if (args[i].equals(COMMAND_CONFIG_SHORT) || args[i].equals(COMMAND_CONFIG)) {
+                CONFIG = args[++i];
                 continue parsing;
             }
             String leagues = "";
@@ -232,7 +246,7 @@ public class GameControllerSimulator {
         int red_team_number = 0;
 
         try {
-            Object obj = parser.parse(new FileReader(PATH+"/"+CONFIG));
+            Object obj = parser.parse(new FileReader(CONFIG));
             JSONObject jsonObject = (JSONObject)obj;
             match_type = (String)jsonObject.get("type");
             size_class = (String)jsonObject.get("class");
@@ -349,7 +363,7 @@ public class GameControllerSimulator {
                 + ") vs " + Teams.getNames(false)[data.team[1].teamNumber]
                 + " (" + data.team[1].teamColor + ")");
 
-        GCGUI gui = new HL_SimGui(gpd.getFullScreen(), data, gpd);
+        GCGUI gui = new HL_SimGui(gpd.getFullScreen(), data, gpd, port);
 
         new KeyboardListener();
         EventHandler.getInstance().setGUI(gui);

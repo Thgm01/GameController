@@ -19,11 +19,11 @@ public class HL_SimGui extends AbstractUI {
 
     private ButtonGroup kickOffGroup;
 
-    public HL_SimGui(boolean fullscreen, AdvancedData data, GamePreparationData gamePrepData) {
+    public HL_SimGui(boolean fullscreen, AdvancedData data, GamePreparationData gamePrepData, int port) {
         super(fullscreen, data, gamePrepData);
 
         try {
-            AutoRefServer server=new AutoRefServer(commandQueue, returnCommandQueue);
+            AutoRefServer server=new AutoRefServer(commandQueue, returnCommandQueue, port);
 
             Thread serverThread=new Thread(server);
             serverThread.start();

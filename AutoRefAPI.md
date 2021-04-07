@@ -17,7 +17,8 @@ in the main directory. For more details, see the official README.md.
 
 ### 2. Requirements
 
-The GameController expects a `game.json` file to be present in 
+The GameController expects a `game.json` file to either be passed to the 
+jar as a command line argument using `--config` or `-c` or to be be present in 
 `resources/config/sim`. The config file needs to contain:
 
 ````json
@@ -46,7 +47,7 @@ AutoRef, you need to execute the `GameControllerSimulator.jar`:
 
 ```bash
 cd build/jar
-java -jar GameControllerSimulator.jar
+java -jar GameControllerSimulator.jar [--config path/to/config --port port]
 ```
 
 ### 4. Testing
@@ -58,7 +59,8 @@ in ``sim_client`` using Python 3.
 
 To connect to the GameController via the AutoReferee, you need to
 open a TCP/IP connection on port 8750. The port can be configured in
-the `AutoRefServer.java` class. 
+the `AutoRefServer.java` class or by passing another port as a `-p` or
+`--port` argument to the jar.
 
 The GameController needs to be up and running (i.e., you need to see
 the visual interface) before a connection can be established.
@@ -91,7 +93,8 @@ performed)
 ``<id>:INVALID`` In case an unknown command was sent to the GameController.
 
 In the following, all valid message types with the set of parameters 
-will be defined:
+will be defined. An example for starting a game using the API is provided
+in `sim_client/main.py`.
 
 ### Kick-Off
 

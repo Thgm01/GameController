@@ -16,12 +16,13 @@ public class AutoRefServer implements Runnable
 
     BlockingQueue<String> returnCommunicationQueue;
 
-    private final static int port = 8750;
+    private int port;
 
-    public AutoRefServer(BlockingQueue<String> commandQueue, BlockingQueue<String> returnCommunicationQueue){
+    public AutoRefServer(BlockingQueue<String> commandQueue, BlockingQueue<String> returnCommunicationQueue, int port){
         try{
             this.commandQueue = commandQueue;
             this.returnCommunicationQueue = returnCommunicationQueue;
+            this.port = port;
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -37,9 +38,10 @@ public class AutoRefServer implements Runnable
                     simulator_socket.close();
                 }
                 simulator_socket = new ServerSocket(port);
+                System.out.println("Start listening to AutoReferee connection on port " + port);
                 this.connectionSocket = simulator_socket.accept();
                 isConnected = true;
-                System.out.println("Client Got Connected  ");
+                System.out.println("AutoReferee connected");
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
                 BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connectionSocket.getOutputStream()));
