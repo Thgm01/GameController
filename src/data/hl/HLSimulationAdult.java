@@ -5,7 +5,7 @@ package data.hl;
  *
  * @author Michel-Zen
  */
-public class HLSimulationAdult extends HL
+public class HLSimulationAdult extends HLSim
 {
     public HLSimulationAdult()
     {
