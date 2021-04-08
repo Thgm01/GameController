@@ -15,6 +15,7 @@ import data.Helper;
 import data.PlayerInfo;
 import data.Rules;
 import data.hl.HL;
+import data.hl.HLSim;
 import data.states.AdvancedData;
 import data.values.Penalties;
 import data.values.Side;
@@ -195,7 +196,7 @@ public class Robot extends AbstractComponent {
                 (seconds > 0 || robotInfo.penalty == Penalties.SUBSTITUTE || isEjected)) {
             if (!isEjected) {
                 boolean servingPenalty = data.isServingPenalty[sideValue][robotId];
-                boolean pickup = Rules.league instanceof HL && robotInfo.penalty == Penalties.HL_PICKUP_OR_INCAPABLE;
+                boolean pickup = (Rules.league instanceof HL || Rules.league instanceof HLSim) && robotInfo.penalty == Penalties.HL_PICKUP_OR_INCAPABLE;
 
                 if (!servingPenalty) {
                     if (pickup) {
@@ -204,7 +205,7 @@ public class Robot extends AbstractComponent {
                     } else if (robotInfo.penalty == Penalties.SUBSTITUTE) {
                         robotLabel.setText(data.team[sideValue].teamColor + " " + (robotId + 1) + " (" + Penalties.SUBSTITUTE.toString() + ")");
                         highlight(robot, false);
-                    } else if (Rules.league instanceof HL) {
+                    } else if (Rules.league instanceof HL || Rules.league instanceof HLSim) {
                         robotLabel.setText(data.team[sideValue].teamColor + " " + (robotId + 1) + ": " + Helper.formatTime(seconds));
                         highlight(robot, true);
                     }

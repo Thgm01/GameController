@@ -8,6 +8,7 @@ import controller.ui.ui.customized.ToggleButton;
 import data.Rules;
 import data.communication.GameControlData;
 import data.hl.HL;
+import data.hl.HLSim;
 import data.states.AdvancedData;
 import data.values.SecondaryGameStates;
 
@@ -89,7 +90,7 @@ public class SequenceGameStates extends AbstractComponent {
 
         refereeTimeout.addActionListener(ActionBoard.refereeTimeout);
 
-        if (Rules.league instanceof HL) {
+        if (Rules.league instanceof HL || Rules.league instanceof HLSim) {
             dropBall = new Button(DROP_BALL);
             dropBall.addActionListener(ActionBoard.dropBall);
         }
@@ -117,7 +118,7 @@ public class SequenceGameStates extends AbstractComponent {
     @SuppressWarnings("Duplicates")
     public void update(AdvancedData data) {
 
-        if (Rules.league instanceof HL) {
+        if (Rules.league instanceof HL || Rules.league instanceof HLSim) {
             updateDropBall(data);
         }
         firstHalf.setEnabled(ActionBoard.firstHalf.isLegal(data));

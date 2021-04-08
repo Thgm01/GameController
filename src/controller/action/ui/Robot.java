@@ -10,6 +10,7 @@ import controller.action.ui.penalty.Penalty;
 import controller.action.ui.penalty.PickUpHL;
 import controller.action.ui.penalty.Substitute;
 import data.hl.HL;
+import data.hl.HLSim;
 import data.states.AdvancedData;
 import data.states.AdvancedData.PenaltyQueueData;
 import data.PlayerInfo;
@@ -108,7 +109,7 @@ public class Robot extends GCAction
                 && data.team[side].player[number].penalty != Penalties.SUBSTITUTE
                 || EventHandler.getInstance().lastUIEvent instanceof Substitute
                 && data.team[side].player[number].penalty != Penalties.SUBSTITUTE
-                && (!isCoach(data) && (Rules.league instanceof HL) || number != 0))
+                && (!isCoach(data) && (Rules.league instanceof HL || Rules.league instanceof HLSim) || number != 0))
                 || data.team[side].player[number].penalty == Penalties.NONE
                     && (EventHandler.getInstance().lastUIEvent instanceof Penalty)
                     && !(EventHandler.getInstance().lastUIEvent instanceof Substitute)

@@ -10,6 +10,7 @@ import controller.action.ui.penalty.Penalty;
 import controller.ui.ui.customized.ToggleButton;
 import data.Rules;
 import data.hl.HL;
+import data.hl.HLSim;
 import data.states.AdvancedData;
 import data.values.Penalties;
 
@@ -50,7 +51,7 @@ public class PenaltyComponent extends AbstractComponent {
 
     public void defineLayout() {
         // TODO Customizable with inheritance
-        if (Rules.league instanceof HL) {
+        if (Rules.league instanceof HL || Rules.league instanceof HLSim) {
             addButtonByPenalty(Penalties.HL_BALL_MANIPULATION, ActionBoard.ballManipulation);
             addButtonByPenalty(Penalties.HL_PHYSICAL_CONTACT, new HLPushing());
             addButtonByPenalty(Penalties.HL_PICKUP_OR_INCAPABLE, ActionBoard.pickUpHL);

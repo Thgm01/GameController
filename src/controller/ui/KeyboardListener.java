@@ -5,6 +5,7 @@ import controller.action.ActionBoard;
 import controller.action.GCAction;
 import data.hl.HL;
 import data.Rules;
+import data.hl.HLSim;
 import data.values.TeamColors;
 
 import java.awt.KeyEventDispatcher;
@@ -73,7 +74,7 @@ public class KeyboardListener implements KeyEventDispatcher
             case KeyEvent.VK_DELETE: event = ActionBoard.testmode; break;
             case KeyEvent.VK_BACK_SPACE: event = ActionBoard.undo[1]; break;
             default:
-                if (Rules.league instanceof HL) {
+                if (Rules.league instanceof HL || Rules.league instanceof HLSim) {
                     switch (key) {
                         case KeyEvent.VK_B: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == TeamColors.BLUE ? 0 : 1]; break;
                         case KeyEvent.VK_R: event = ActionBoard.out[EventHandler.getInstance().data.team[0].teamColor == TeamColors.RED ? 0 : 1]; break;
