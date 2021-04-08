@@ -64,6 +64,13 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                         }
                         else { actionRejected(values[0]); }
                         break;
+                    case "SECOND-HALF":
+                        if (ActionBoard.secondHalf.isLegal(data)) {
+                            ActionBoard.secondHalf.perform(data);
+                            actionAccepted(values[0]);
+                        }
+                        else { actionRejected(values[0]); }
+                        break;
                     default:
                         break;
                 }

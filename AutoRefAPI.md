@@ -135,7 +135,7 @@ realtime.
 
 Format: ``<id>:STATE:<gamestate>``
 
-Accepted States: ``READY|SET|PLAY|FINISH``
+Accepted States: ``READY|SET|PLAY|FINISH|SECOND-HALF``
 
 The GameState is used to explicitly set the current state of the game
 in the beginning of a half time, after a game was scored and when the
