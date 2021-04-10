@@ -218,18 +218,7 @@ This message indicates that a dropped ball was called by the AutoReferee.
 The game state then switches back to ``READY``.
 
 ## Upcoming Changes
-    
-### Update planned for April 12th
-- [ ] Penalty shoot-out mode to resolve draws in Round Robin
-- [X] Defining and implementing API for advanced foul behavior
-    - [X] Direct Free Kick
-    - [X] Indirect Free Kick
-    - [X] Corner Kick
-    - [X] Goal Kick
-    - [X] Penalty Kick
-    - [X] Throw-in
-- [X] Defining an implementing API for yellow and red cards
-  
+     
 ### Update planned for May
 - [ ] Allow the GameController to be started headless for running
 in the cloud
