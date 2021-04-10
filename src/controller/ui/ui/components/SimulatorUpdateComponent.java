@@ -77,7 +77,8 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 break;
             case "PENALTY":
                 team = Integer.parseInt(values[2]);
-                robot_number = Integer.parseInt(values[3]);
+                //Internally robot IDs start at 0, for the AutoRef they start at 1
+                robot_number = Integer.parseInt(values[3]) - 1;
                 if ((int)data.team[0].teamNumber == team) {
                     side = 0;
                 }
