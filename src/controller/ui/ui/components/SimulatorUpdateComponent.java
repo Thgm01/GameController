@@ -136,6 +136,7 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 } else if (values.length == 4 && values[3].equals("RETAKE")) {
                     if(ActionBoard.retakeGameInterruptions[side].isLegal(data)) {
                         ActionBoard.retakeGameInterruptions[side].perform(data);
+                        actionAccepted(values[0]);
                     }
                     else {
                         actionRejected(values[0]);
@@ -162,6 +163,15 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 }
                 String card_color = values[4];
                 handleRobotShownCard(data, values, robot_number, side, card_color);
+                break;
+            }
+            case "DROPPEDBALL": {
+                if (ActionBoard.dropBall.isLegal(data)) {
+                    ActionBoard.dropBall.perform(data);
+                    actionAccepted(values[0]);
+                } else {
+                    actionRejected(values[0]);
+                }
                 break;
             }
             default:
