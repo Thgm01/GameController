@@ -202,6 +202,13 @@ identifier of a team that needs to match the ID indicated in the
 While it is possible to show a card to a robot in any game state,
 it may not receive more than two yellow or one red card.
 
+### Dropped Ball
+
+Format: ``<id>:DROPPEDBALL``
+
+This message indicates that a dropped ball was called by the AutoReferee. 
+The game state then switches back to ``READY``.
+
 ## Upcoming Changes
     
 ### Update planned for April 12th
