@@ -4,6 +4,7 @@ import controller.action.ActionBoard;
 import controller.action.ui.*;
 import controller.ui.ui.components.AbstractComponent;
 import data.PlayerInfo;
+import data.Rules;
 import data.states.AdvancedData;
 import data.values.Penalties;
 import data.values.Side;
@@ -327,6 +328,7 @@ public class SimulatorUpdateComponent extends AbstractComponent{
             case "PLAY":
                 if(ActionBoard.play.isLegal(data)) {
                     ActionBoard.play.actionPerformed(null);
+                    releaseAllPenalties(data);
                     actionAccepted(values[0]);
                 }
                 else { actionRejected(values[0]); }
@@ -372,6 +374,22 @@ public class SimulatorUpdateComponent extends AbstractComponent{
         }
     }
 
+    /**
+     * This function releases all penalties from all players
+     * (To be called when game state switches to PLAY)
+     * @param data
+     */
+    private void releaseAllPenalties(AdvancedData data) {
+        for (int side = 0; side <= 1; side++) {
+            for (int robot = 0; robot < Rules.league.teamSize; robot++) {
+                if (data.isServingPenalty[side][robot]) {
+                    data.team[side].player[robot].penalty = Penalties.NONE;
+                    data.isServingPenalty[side][robot] = false;
+                }
+            }
+        }
+
+    }
 
     private void actionAccepted(String id) {
         returnCommandQueue.add(id + ":OK\n");
