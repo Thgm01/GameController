@@ -1,16 +1,14 @@
 package controller.ui.ui.components;
 
 import controller.action.ActionBoard;
-import controller.action.ui.CornerKick;
-import controller.action.ui.GoalKick;
-import controller.action.ui.PenaltyKick;
-import controller.action.ui.ThrowIn;
+import controller.action.ui.*;
 import controller.ui.ui.components.AbstractComponent;
 import data.PlayerInfo;
 import data.states.AdvancedData;
 import data.values.Penalties;
 import data.values.Side;
 
+import java.awt.*;
 import java.util.concurrent.BlockingQueue;
 
 public class SimulatorUpdateComponent extends AbstractComponent{
@@ -149,10 +147,56 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                     break;
                 }
                 break;
+            case "CARD": {
+                team = Integer.parseInt(values[2]);
+                //Internally robot IDs start at 0, for the AutoRef they start at 1
+                robot_number = Integer.parseInt(values[3]) - 1;
+                if ((int)data.team[0].teamNumber == team) {
+                    side = 0;
+                }
+                else if ((int)data.team[1].teamNumber == team) {
+                    side = 1;
+                } else {
+                    actionRejected(values[0]);
+                    break;
+                }
+                String card_color = values[4];
+                handleRobotShownCard(data, values, robot_number, side, card_color);
+                break;
+            }
             default:
                 actionInvalid(values[0]);
                 break;
         }
+    }
+
+    private void handleRobotShownCard(AdvancedData data, String[] values, int robot_number, int side, String card_color_string) {
+        Color card_color = null;
+        switch (card_color_string) {
+            case "WARN":
+                card_color = Color.BLUE;
+                break;
+            case "YELLOW":
+                card_color = Color.YELLOW;
+                break;
+            case "RED":
+                card_color = Color.RED;
+                break;
+            default:
+                actionRejected(values[0]);
+                break;
+        }
+        if (card_color != null) {
+            CardIncrease card = new CardIncrease(Side.getFromInt(side), robot_number, card_color);
+            if(card.isLegal(data)) {
+                card.perform(data);
+                actionAccepted(values[0]);
+            } else {
+                actionRejected(values[0]);
+            }
+
+        }
+
     }
 
     private void handleGameInterruption(AdvancedData data, String[] values, int side) {
@@ -212,6 +256,7 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 break;
             }
             default:
+                actionRejected(values[0]);
                 break;
         }
 
@@ -248,6 +293,7 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 else { actionRejected(values[0]); }
                 break;
             default:
+                actionRejected(values[0]);
                 break;
         }
     }
@@ -290,6 +336,7 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 else { actionRejected(values[0]); }
                 break;
             default:
+                actionRejected(values[0]);
                 break;
         }
     }

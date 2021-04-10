@@ -187,18 +187,33 @@ This message indicates that a goal was scored by a given team.
 The ``team_id`` is the unique identifier of a team that needs to match the ID indicated in the
 ``game.json`` config.
 
+### Yellow and red cards, official warnings
+
+Format: ``<id>:CARD:<team_id>:<robot_id>:<type>``
+
+Accepted Types: ``YELLOW|RED|WARN``
+
+Cards are used to communicate that a robot has received an
+official warning (blue card in the interface), a yellow or red
+card . The ``team_id`` is the unique
+identifier of a team that needs to match the ID indicated in the
+``game.json`` config. The ``robot_id`` is the identifier of the robot
+(between 1 and 4 in KidSize and 1 and 2 in AdultSize).
+While it is possible to show a card to a robot in any game state,
+it may not receive more than two yellow or one red card.
+
 ## Upcoming Changes
     
 ### Update planned for April 12th
 - [ ] Penalty shoot-out mode to resolve draws in Round Robin
-- [ ] Defining and implementing API for advanced foul behavior
-    - [ ] Direct Free Kick
-    - [ ] Indirect Free Kick
-    - [ ] Corner Kick
-    - [ ] Goal Kick
-    - [ ] Penalty Kick
-    - [ ] Throw-in
-- [ ] Defining an implementing API for yellow and red cards
+- [X] Defining and implementing API for advanced foul behavior
+    - [X] Direct Free Kick
+    - [X] Indirect Free Kick
+    - [X] Corner Kick
+    - [X] Goal Kick
+    - [X] Penalty Kick
+    - [X] Throw-in
+- [X] Defining an implementing API for yellow and red cards
   
 ### Update planned for May
 - [ ] Allow the GameController to be started headless for running
