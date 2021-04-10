@@ -23,7 +23,7 @@ jar as a command line argument using `--config` or `-c` or to be be present in
 
 ````json
 {
-  "type": "NORMAL" | "KNOCKOUT",
+  "type": "NORMAL" | "KNOCKOUT" | "PENALTY",
   "class": "ADULT" | "KID",
   "blue": {
     "id": <team_id>
@@ -38,6 +38,12 @@ of the tournament. It needs to be an identifier that is set in the
 `teams.cfg` file in the respective `hl_sim_adult` or `hl_sim_kid` config
 folder.
 
+If the game ``type`` is set to ``NORMAL``, then a round-robin scheme is 
+applied in which games can end in a draw.
+If the game ``type`` is ``KNOCKOUT`` then extended time and a penalty
+shoot-out can be played in a case of a draw during the normal game time.
+If the game ``type`` is ``PENALTY`` then the game starts with a 
+penalty shoot-out directly.
 
 
 ### 3. Executing the Jar

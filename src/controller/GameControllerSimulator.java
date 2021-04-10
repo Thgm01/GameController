@@ -276,6 +276,10 @@ public class GameControllerSimulator {
         } else if (match_type.equals("KNOCKOUT")) {
             gpd.setFullTimeGame(true);
         }
+        else if (match_type.equals("PENALTY")) {
+            gpd.setFullTimeGame(true);
+            Rules.league.startWithPenalty = true;
+        }
 
         ArrayList<TeamLoadInfo> available_teams = gpd.getAvailableTeams();
 
