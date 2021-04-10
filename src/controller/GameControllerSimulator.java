@@ -273,6 +273,8 @@ public class GameControllerSimulator {
 
         if (match_type.equals("NORMAL")) {
             gpd.setFullTimeGame(false);
+        } else if (match_type.equals("KNOCKOUT")) {
+            gpd.setFullTimeGame(true);
         }
 
         ArrayList<TeamLoadInfo> available_teams = gpd.getAvailableTeams();

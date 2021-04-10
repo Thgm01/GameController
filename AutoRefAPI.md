@@ -135,11 +135,13 @@ realtime.
 
 Format: ``<id>:STATE:<gamestate>``
 
-Accepted States: ``READY|SET|PLAY|FINISH|SECOND-HALF``
+Accepted States: ``READY|SET|PLAY|FINISH|SECOND-HALF|OVERTIME-FIRST-HALF|OVERTIME-SECOND-HALF|PENALTY-SHOOTOUT``
 
 The GameState is used to explicitly set the current state of the game
 in the beginning of a half time, after a game was scored and when the
 game time has exceeded the length of a half time.
+It is also used to switch to the second half, the first and second half time of
+the extended time, and the penalty shoot-out in knock-out matches.
 
 ### Penalty
 

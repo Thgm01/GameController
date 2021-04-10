@@ -345,6 +345,27 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 }
                 else { actionRejected(values[0]); }
                 break;
+            case "OVERTIME-FIRST-HALF":
+                if (ActionBoard.firstHalfOvertime.isLegal(data)) {
+                    ActionBoard.firstHalfOvertime.perform(data);
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
+            case "OVERTIME-SECOND-HALF":
+                if (ActionBoard.secondHalfOvertime.isLegal(data)) {
+                    ActionBoard.secondHalfOvertime.perform(data);
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
+            case "PENALTY-SHOOTOUT":
+                if (ActionBoard.penaltyShoot.isLegal(data)) {
+                    ActionBoard.penaltyShoot.perform(data);
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
             default:
                 actionRejected(values[0]);
                 break;
