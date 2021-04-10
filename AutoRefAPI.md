@@ -153,8 +153,31 @@ identifier of a team that needs to match the ID indicated in the
 ``game.json`` config. The ``robot_id`` is the identifier of the robot
 (between 1 and 4 in KidSize and 1 and 2 in AdultSize).
 
-Important: This is not used for direct or indirect free kicks! They
-require a different format!
+
+### Game Interruptions (Free kicks, Penalty kicks, Corner kicks, Throw-ins)
+Format: ``<id>:<interruption>:<team_id>:<action>``
+
+Accepted Interruptions: ``DIRECT_FREEKICK|INDIRECT_FREEKICK|PENALTYKICK|CORNERKICK|GOALKICK|THROWIN``
+
+Accepted Actions: ``<empty>|READY|PREPARE|EXECUTE|RETAKE``
+
+Game Interruptions cover the behavior of the GameController for the Direct and Indirect Free Kick,
+Penalty Kicks, Corner Kicks and Throw-Ins.
+The ``team_id`` is the unique identifier of a team that needs to match the ID indicated in the
+``game.json`` config. 
+The first call that the AutoReferee makes for a game interruption does not 
+require an action to be set. This just initiates the procedure for the 
+given game interruption. The second, third and fourth call then need 
+to send the actions in the expected order:
+
+````
+<id>:<interruption>:<team_id>
+<id>:<interruption>:<team_id>:READY
+<id>:<interruption>:<team_id>:PREPARE
+<id>:<interruption>:<team_id>:EXECUTE
+````
+At any point between the game interruption being called with the initial command and the ``EXECTUTE`` command, it can be reset to the initial state
+by calling ``<id>:<interruption>:<team_id>:RETAKE``.
 
 ### Score
 
@@ -165,11 +188,6 @@ The ``team_id`` is the unique identifier of a team that needs to match the ID in
 ``game.json`` config.
 
 ## Upcoming Changes
-
-### As soon as possible
-- [ ] Proper configuration of the simulated games:
-    - [ ] Removing substitute players
-    - [ ] Removing half time period
     
 ### Update planned for April 12th
 - [ ] Penalty shoot-out mode to resolve draws in Round Robin

@@ -1,6 +1,10 @@
 package controller.ui.ui.components;
 
 import controller.action.ActionBoard;
+import controller.action.ui.CornerKick;
+import controller.action.ui.GoalKick;
+import controller.action.ui.PenaltyKick;
+import controller.action.ui.ThrowIn;
 import controller.ui.ui.components.AbstractComponent;
 import data.PlayerInfo;
 import data.states.AdvancedData;
@@ -35,45 +39,7 @@ public class SimulatorUpdateComponent extends AbstractComponent{
         int side = -1;
         switch (values[1]) {
             case "STATE":
-                switch (values[2]) {
-                    case "READY":
-                        if(ActionBoard.ready.isLegal(data)) {
-                            ActionBoard.ready.actionPerformed(null);
-                            actionAccepted(values[0]);
-                        }
-                        else { actionRejected(values[0]); }
-                        break;
-                    case "SET":
-                        if(ActionBoard.set.isLegal(data)) {
-                            ActionBoard.set.actionPerformed(null);
-                            actionAccepted(values[0]);
-                        }
-                        else { actionRejected(values[0]); }
-                        break;
-                    case "PLAY":
-                        if(ActionBoard.play.isLegal(data)) {
-                            ActionBoard.play.actionPerformed(null);
-                            actionAccepted(values[0]);
-                        }
-                        else { actionRejected(values[0]); }
-                        break;
-                    case "FINISH":
-                        if(ActionBoard.finish.isLegal(data)) {
-                            ActionBoard.finish.actionPerformed(null);
-                            actionAccepted(values[0]);
-                        }
-                        else { actionRejected(values[0]); }
-                        break;
-                    case "SECOND-HALF":
-                        if (ActionBoard.secondHalf.isLegal(data)) {
-                            ActionBoard.secondHalf.perform(data);
-                            actionAccepted(values[0]);
-                        }
-                        else { actionRejected(values[0]); }
-                        break;
-                    default:
-                        break;
-                }
+                handleStateChanged(data, values);
                 break;
             case "PENALTY":
                 team = Integer.parseInt(values[2]);
@@ -88,38 +54,7 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                     actionRejected(values[0]);
                     break;
                 }
-                switch (values[4]) {
-                    case "BALL_MANIPULATION":
-                        if (ActionBoard.ballManipulation.isLegal(data)) {
-                            PlayerInfo pi = data.team[side].player[robot_number];
-                            ActionBoard.ballManipulation.performOn(data, pi, side,robot_number);
-                            data.isServingPenalty[side][robot_number] = true;
-                            actionAccepted(values[0]);
-                        }
-                        else { actionRejected(values[0]); }
-                        break;
-                    case "PICKUP":
-                    case "INCAPABLE":
-                        if (ActionBoard.pickUpHL.isLegal(data)) {
-                            PlayerInfo pi = data.team[side].player[robot_number];
-                            ActionBoard.pickUpHL.performOn(data, pi, side,robot_number);
-                            data.isServingPenalty[side][robot_number] = true;
-                            actionAccepted(values[0]);
-                        }
-                        else { actionRejected(values[0]); }
-                        break;
-                    case "PHYSICAL_CONTACT":
-                        if (ActionBoard.teammatePushing.isLegal(data)) {
-                            PlayerInfo pi = data.team[side].player[robot_number];
-                            ActionBoard.teammatePushing.performOn(data, pi, side,robot_number);
-                            data.isServingPenalty[side][robot_number] = true;
-                            actionAccepted(values[0]);
-                        }
-                        else { actionRejected(values[0]); }
-                        break;
-                    default:
-                        break;
-                }
+                handleRobotPenalty(data, values, robot_number, side);
                 break;
             case "SCORE":
                 team = Integer.parseInt(values[2]);
@@ -173,22 +108,206 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 actionAccepted(values[0]);
                 break;
             }
+            case "DIRECT_FREEKICK":
+            case "INDIRECT_FREEKICK":
+            case "PENALTYKICK":
+            case "CORNERKICK":
+            case "GOALKICK":
+            case "THROWIN":
+                team = Integer.parseInt(values[2]);
+                if ((int) data.team[0].teamNumber == team) {
+                    side = 0;
+                } else if ((int) data.team[1].teamNumber == team) {
+                    side = 1;
+                } else {
+                    actionRejected(values[0]);
+                    break;
+                }
+                System.out.println("Secondary game state info team is " + data.secGameStateInfo.toByteArray()[0]);
+                System.out.println("Secondary game state info substate is " + data.secGameStateInfo.toByteArray()[1]);
+                if(values.length == 3 && data.secGameStateInfo.toByteArray()[0] == 0
+                        // Initiating a game interruption is only legal if none is ongoing at the moment
+                        || values.length == 4 && values[3].equals("READY") && data.secGameStateInfo.toByteArray()[0] != 0 && data.secGameStateInfo.toByteArray()[1] == 0
+                        // Going into the READY state is only allowed if a game interruption was initiated before
+                        || values.length == 4 && values[3].equals("PREPARE") && data.secGameStateInfo.toByteArray()[0] != 0 && data.secGameStateInfo.toByteArray()[1] == 1
+                        // Going into the PREPARE state is only allowed if the game interruption was set to READY before
+                        || values.length == 4 && values[3].equals("EXECUTE") && data.secGameStateInfo.toByteArray()[0] != 0 && data.secGameStateInfo.toByteArray()[1] == 2
+                        // Going into the EXECUTE state is only allowed if the game interruption was set to PREPARE before
+                ) {
+                    handleGameInterruption(data, values, side);
+                } else if (values.length == 4 && values[3].equals("RETAKE")) {
+                    if(ActionBoard.retakeGameInterruptions[side].isLegal(data)) {
+                        ActionBoard.retakeGameInterruptions[side].perform(data);
+                    }
+                    else {
+                        actionRejected(values[0]);
+                        break;
+                    }
+                }
+                else {
+                    actionRejected(values[0]);
+                    break;
+                }
+                break;
             default:
                 actionInvalid(values[0]);
                 break;
         }
     }
 
+    private void handleGameInterruption(AdvancedData data, String[] values, int side) {
+        switch (values[1]) {
+            case "DIRECT_FREEKICK": {
+                if (ActionBoard.directFreeKick[side].isLegal(data)) {
+                    ActionBoard.directFreeKick[side].perform(data);
+                    actionAccepted(values[0]);
+                } else {
+                    actionRejected(values[0]);
+                }
+                break;
+            }
+            case "INDIRECT_FREEKICK": {
+                if (ActionBoard.indirectFreeKick[side].isLegal(data)) {
+                    ActionBoard.indirectFreeKick[side].perform(data);
+                    actionAccepted(values[0]);
+                } else {
+                    actionRejected(values[0]);
+                }
+                break;
+            }
+            case "PENALTYKICK": {
+                if (ActionBoard.penaltyKick[side].isLegal(data)) {
+                    ActionBoard.penaltyKick[side].perform(data);
+                    actionAccepted(values[0]);
+                } else {
+                    actionRejected(values[0]);
+                }
+                break;
+            }
+            case "CORNERKICK": {
+                if (ActionBoard.cornerKick[side].isLegal(data)) {
+                    ActionBoard.cornerKick[side].perform(data);
+                    actionAccepted(values[0]);
+                } else {
+                    actionRejected(values[0]);
+                }
+                break;
+            }
+            case "GOALKICK": {
+                if (ActionBoard.goalKick[side].isLegal(data)) {
+                    ActionBoard.goalKick[side].perform(data);
+                    actionAccepted(values[0]);
+                } else {
+                    actionRejected(values[0]);
+                }
+                break;
+            }
+            case "THROWIN": {
+                if (ActionBoard.throwIn[side].isLegal(data)) {
+                    ActionBoard.throwIn[side].perform(data);
+                    actionAccepted(values[0]);
+                } else {
+                    actionRejected(values[0]);
+                }
+                break;
+            }
+            default:
+                break;
+        }
+
+    }
+
+    private void handleRobotPenalty(AdvancedData data, String[] values, int robot_number, int side) {
+        switch (values[4]) {
+            case "BALL_MANIPULATION":
+                if (ActionBoard.ballManipulation.isLegal(data)) {
+                    PlayerInfo pi = data.team[side].player[robot_number];
+                    ActionBoard.ballManipulation.performOn(data, pi, side, robot_number);
+                    data.isServingPenalty[side][robot_number] = true;
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
+            case "PICKUP":
+            case "INCAPABLE":
+                if (ActionBoard.pickUpHL.isLegal(data)) {
+                    PlayerInfo pi = data.team[side].player[robot_number];
+                    ActionBoard.pickUpHL.performOn(data, pi, side, robot_number);
+                    data.isServingPenalty[side][robot_number] = true;
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
+            case "PHYSICAL_CONTACT":
+                if (ActionBoard.teammatePushing.isLegal(data)) {
+                    PlayerInfo pi = data.team[side].player[robot_number];
+                    ActionBoard.teammatePushing.performOn(data, pi, side, robot_number);
+                    data.isServingPenalty[side][robot_number] = true;
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void handleStateChanged(AdvancedData data, String[] values) {
+        switch (values[2]) {
+            case "READY":
+                if(ActionBoard.ready.isLegal(data)) {
+                    ActionBoard.ready.actionPerformed(null);
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
+            case "SET":
+                if(ActionBoard.set.isLegal(data)) {
+                    ActionBoard.set.actionPerformed(null);
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
+            case "PLAY":
+                if(ActionBoard.play.isLegal(data)) {
+                    ActionBoard.play.actionPerformed(null);
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
+            case "FINISH":
+                if(ActionBoard.finish.isLegal(data)) {
+                    ActionBoard.finish.actionPerformed(null);
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
+            case "SECOND-HALF":
+                if (ActionBoard.secondHalf.isLegal(data)) {
+                    ActionBoard.secondHalf.perform(data);
+                    actionAccepted(values[0]);
+                }
+                else { actionRejected(values[0]); }
+                break;
+            default:
+                break;
+        }
+    }
+
+
     private void actionAccepted(String id) {
         returnCommandQueue.add(id + ":OK\n");
+        System.out.println("Message with ID " + id + " was returned with status OK");
     }
 
     private void actionRejected(String id) {
         returnCommandQueue.add(id + ":ILLEGAL\n");
+        System.out.println("Message with ID " + id + " was returned with status ILLEGAL");
     }
 
     private void actionInvalid(String id) {
         returnCommandQueue.add(id + ":INVALID\n");
+        System.out.println("Message with ID " + id + " was returned with status INVALID");
     }
 
 }
