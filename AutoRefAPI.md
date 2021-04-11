@@ -23,7 +23,7 @@ jar as a command line argument using `--config` or `-c` or to be be present in
 
 ````json
 {
-  "type": "NORMAL" | "KNOCKOUT",
+  "type": "NORMAL" | "KNOCKOUT" | "PENALTY",
   "class": "ADULT" | "KID",
   "blue": {
     "id": <team_id>
@@ -38,6 +38,12 @@ of the tournament. It needs to be an identifier that is set in the
 `teams.cfg` file in the respective `hl_sim_adult` or `hl_sim_kid` config
 folder.
 
+If the game ``type`` is set to ``NORMAL``, then a round-robin scheme is 
+applied in which games can end in a draw.
+If the game ``type`` is ``KNOCKOUT`` then extended time and a penalty
+shoot-out can be played in a case of a draw during the normal game time.
+If the game ``type`` is ``PENALTY`` then the game starts with a 
+penalty shoot-out directly.
 
 
 ### 3. Executing the Jar
@@ -135,11 +141,13 @@ realtime.
 
 Format: ``<id>:STATE:<gamestate>``
 
-Accepted States: ``READY|SET|PLAY|FINISH``
+Accepted States: ``READY|SET|PLAY|FINISH|SECOND-HALF|OVERTIME-FIRST-HALF|OVERTIME-SECOND-HALF|PENALTY-SHOOTOUT``
 
 The GameState is used to explicitly set the current state of the game
 in the beginning of a half time, after a game was scored and when the
 game time has exceeded the length of a half time.
+It is also used to switch to the second half, the first and second half time of
+the extended time, and the penalty shoot-out in knock-out matches.
 
 ### Penalty
 
@@ -153,8 +161,31 @@ identifier of a team that needs to match the ID indicated in the
 ``game.json`` config. The ``robot_id`` is the identifier of the robot
 (between 1 and 4 in KidSize and 1 and 2 in AdultSize).
 
-Important: This is not used for direct or indirect free kicks! They
-require a different format!
+
+### Game Interruptions (Free kicks, Penalty kicks, Corner kicks, Throw-ins)
+Format: ``<id>:<interruption>:<team_id>:<action>``
+
+Accepted Interruptions: ``DIRECT_FREEKICK|INDIRECT_FREEKICK|PENALTYKICK|CORNERKICK|GOALKICK|THROWIN``
+
+Accepted Actions: ``<empty>|READY|PREPARE|EXECUTE|RETAKE``
+
+Game Interruptions cover the behavior of the GameController for the Direct and Indirect Free Kick,
+Penalty Kicks, Corner Kicks and Throw-Ins.
+The ``team_id`` is the unique identifier of a team that needs to match the ID indicated in the
+``game.json`` config. 
+The first call that the AutoReferee makes for a game interruption does not 
+require an action to be set. This just initiates the procedure for the 
+given game interruption. The second, third and fourth call then need 
+to send the actions in the expected order:
+
+````
+<id>:<interruption>:<team_id>
+<id>:<interruption>:<team_id>:READY
+<id>:<interruption>:<team_id>:PREPARE
+<id>:<interruption>:<team_id>:EXECUTE
+````
+At any point between the game interruption being called with the initial command and the ``EXECTUTE`` command, it can be reset to the initial state
+by calling ``<id>:<interruption>:<team_id>:RETAKE``.
 
 ### Score
 
@@ -164,24 +195,30 @@ This message indicates that a goal was scored by a given team.
 The ``team_id`` is the unique identifier of a team that needs to match the ID indicated in the
 ``game.json`` config.
 
-## Upcoming Changes
+### Yellow and red cards, official warnings
 
-### As soon as possible
-- [ ] Proper configuration of the simulated games:
-    - [ ] Removing substitute players
-    - [ ] Removing half time period
-    
-### Update planned for April 12th
-- [ ] Penalty shoot-out mode to resolve draws in Round Robin
-- [ ] Defining and implementing API for advanced foul behavior
-    - [ ] Direct Free Kick
-    - [ ] Indirect Free Kick
-    - [ ] Corner Kick
-    - [ ] Goal Kick
-    - [ ] Penalty Kick
-    - [ ] Throw-in
-- [ ] Defining an implementing API for yellow and red cards
-  
+Format: ``<id>:CARD:<team_id>:<robot_id>:<type>``
+
+Accepted Types: ``YELLOW|RED|WARN``
+
+Cards are used to communicate that a robot has received an
+official warning (blue card in the interface), a yellow or red
+card . The ``team_id`` is the unique
+identifier of a team that needs to match the ID indicated in the
+``game.json`` config. The ``robot_id`` is the identifier of the robot
+(between 1 and 4 in KidSize and 1 and 2 in AdultSize).
+While it is possible to show a card to a robot in any game state,
+it may not receive more than two yellow or one red card.
+
+### Dropped Ball
+
+Format: ``<id>:DROPPEDBALL``
+
+This message indicates that a dropped ball was called by the AutoReferee. 
+The game state then switches back to ``READY``.
+
+## Upcoming Changes
+     
 ### Update planned for May
 - [ ] Allow the GameController to be started headless for running
 in the cloud
