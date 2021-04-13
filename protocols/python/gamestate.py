@@ -71,6 +71,7 @@ GameState = "gamedata" / Struct(
                              STATE_DIRECT_FREEKICK=4,
                              STATE_INDIRECT_FREEKICK=5,
                              STATE_PENALTYKICK=6,
+                             STATE_CORNERKICK=7,
                              DROPBALL=128,
                              UNKNOWN=255
                              ),
