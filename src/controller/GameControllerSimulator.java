@@ -57,9 +57,10 @@ public class GameControllerSimulator {
      */
     private final static String LOG_DIRECTORY = "logs";
 
-    private static final String HELP_TEMPLATE = "Usage: java -jar GameController.jar {options}"
+    private static final String HELP_TEMPLATE = "Usage: java -jar GameControllerSimulator.jar {options}"
             + "\n  (-h | --help)                   display help"
             + "\n  (-t | --test)                   use test-mode - currently only disabling the delayed switch to playing in SPL"
+            + "\n  (-f | --fast)                   use fast mode for running the GameController faster than real time"
             + "\n  (-i | --interface) <interface>  set network interface (default is a connected IPv4 interface)"
             + "\n  (-l | --league) %s%sselect league (default is spl)"
             + "\n  (-w | --window)                 select window mode (default is fullscreen)"
@@ -78,6 +79,8 @@ public class GameControllerSimulator {
     private static final String COMMAND_PORT_SHORT = "-p";
     private static final String COMMAND_CONFIG= "--config";
     private static final String COMMAND_CONFIG_SHORT = "-c";
+    private static final String COMMAND_FAST= "--fast";
+    private static final String COMMAND_FAST_SHORT = "-f";
 
     /** Dynamically settable path to the config root folder */
     private static final String CONFIG_ROOT = System.getProperty("CONFIG_ROOT", "");
@@ -101,6 +104,7 @@ public class GameControllerSimulator {
         String interfaceName = "";
         boolean windowMode = false;
         boolean testMode = false;
+        boolean fastMode = false;
 
         parsing:
         for (int i = 0; i < args.length; i++) {
@@ -130,6 +134,9 @@ public class GameControllerSimulator {
                 continue parsing;
             } else if (args[i].equals(COMMAND_CONFIG_SHORT) || args[i].equals(COMMAND_CONFIG)) {
                 CONFIG = args[++i];
+                continue parsing;
+            } else if (args[i].equals(COMMAND_FAST_SHORT) || args[i].equals(COMMAND_FAST)) {
+                fastMode = true;
                 continue parsing;
             }
             String leagues = "";
@@ -321,6 +328,9 @@ public class GameControllerSimulator {
             Sender sender = Sender.getInstance();
             sender.send(data);
             sender.start();
+            if (fastMode) {
+                sender.UPDATEFREQUENCY = 50; //set the message update frequency to 50ms
+            }
 
             //event-handler
             EventHandler.getInstance().data = data;
@@ -376,6 +386,10 @@ public class GameControllerSimulator {
         gui.update(data);
 
 
+
+        if (fastMode) {
+            Clock.HEARTBEAT = 5; //set the clock update to 5ms
+        }
         //clock runs until window is closed
         Clock.getInstance().start();
 
