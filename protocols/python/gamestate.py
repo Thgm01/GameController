@@ -18,7 +18,8 @@ RobotInfo = "robot_info" / Struct(
     "penalty" / Byte,
     "secs_till_unpenalized" / Byte,
     "number_of_yellow_cards" / Byte,
-    "number_of_red_cards" / Byte
+    "number_of_red_cards" / Byte,
+    "goalkeeper" / Flag
 )
 
 TeamInfo = "team" / Struct(

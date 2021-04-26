@@ -9,6 +9,7 @@ public enum PlayerResponses implements DocumentingMarkdown {
     MAN_PENALISE(0, "Manual Penalized"),
     MAN_UNPENALISE(1, "Manual Unpenalized"),
     ALIVE(2, "Alive"),
+    GOALKEEPER(3, "Goalkeeper"),
 
     UNKNOWN(255, "Unknown");
 

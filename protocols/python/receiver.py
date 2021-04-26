@@ -47,7 +47,8 @@ class GameStateReceiver(object):
         # Information that is used when sending the answer to the game controller
         self.team = team
         self.player = player
-        self.man_penalize = False
+        self.man_penalize = True
+        self.is_goalkeeper = True
 
         # The address listening on and the port for sending back the robots meta data
         self.addr = addr
@@ -114,6 +115,8 @@ class GameStateReceiver(object):
     def answer_to_gamecontroller(self, peer):
         """ Sends a life sign to the game controller """
         return_message = 0 if self.man_penalize else 2
+        if self.is_goalkeeper:
+            return_message = 3
 
         data = Container(
             header=b"RGrt",
