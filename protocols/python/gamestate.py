@@ -79,7 +79,7 @@ GameState = "gamedata" / Struct(
     "drop_in_team" / Flag,
     "drop_in_time" / Short,
     "seconds_remaining" / Int16sl,
-    "secondary_seconds_remaining" / Short,
+    "secondary_seconds_remaining" / Int16sl,
     "teams" / Array(2, "team" / TeamInfo)
 )
 
