@@ -17,6 +17,8 @@ interface with the GC can utilize the new protocol.
 import socket
 import time
 import logging
+import argparse
+import sys
 
 # Requires construct==2.5.3
 from construct import Container, ConstError
@@ -33,6 +35,11 @@ DEFAULT_LISTENING_HOST = '0.0.0.0'
 GAME_CONTROLLER_LISTEN_PORT = 3838
 GAME_CONTROLLER_ANSWER_PORT = 3939
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--team', type=int, default=1, help="team ID, default is 1")
+parser.add_argument('--player', type=int, default=1, help="player ID, default is 1")
+parser.add_argument('--goalkeeper', action="store_true", help="if this flag is present, the player takes the role of the goalkeeper")
+
 
 class GameStateReceiver(object):
     """ This class puts up a simple UDP Server which receives the
@@ -43,12 +50,12 @@ class GameStateReceiver(object):
 
     After this we send a package back to the GC """
 
-    def __init__(self, team, player, addr=(DEFAULT_LISTENING_HOST, GAME_CONTROLLER_LISTEN_PORT), answer_port=GAME_CONTROLLER_ANSWER_PORT):
+    def __init__(self, team, player, is_goalkeeper, addr=(DEFAULT_LISTENING_HOST, GAME_CONTROLLER_LISTEN_PORT), answer_port=GAME_CONTROLLER_ANSWER_PORT):
         # Information that is used when sending the answer to the game controller
         self.team = team
         self.player = player
         self.man_penalize = True
-        self.is_goalkeeper = True
+        self.is_goalkeeper = is_goalkeeper
 
         # The address listening on and the port for sending back the robots meta data
         self.addr = addr
@@ -153,10 +160,11 @@ class GameStateReceiver(object):
 class SampleGameStateReceiver(GameStateReceiver):
 
     def on_new_gamestate(self, state):
-        print(state)
-        print(state.secondary_state_info)
+       print(state)
+       print(state.secondary_state_info)
 
 if __name__ == '__main__':
-    rec = SampleGameStateReceiver(team=1, player=1)
+    args = parser.parse_args(sys.argv[1:])
+    rec = SampleGameStateReceiver(team=args.team, player=args.player, is_goalkeeper=args.goalkeeper)
     rec.receive_forever()
 
