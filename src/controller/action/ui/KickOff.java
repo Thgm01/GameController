@@ -65,9 +65,11 @@ public class KickOff extends GCAction
     {
         return (data.kickOffTeam == data.team[side].teamNumber)
                 || ((Rules.league.kickoffChoice)
-                    && (data.secGameState == SecondaryGameStates.NORMAL)
-                    && (data.firstHalf == GameControlData.C_TRUE)
-                    && (data.gameState == GameStates.INITIAL))
+                    && (((data.secGameState == SecondaryGameStates.NORMAL)
+                        && (data.firstHalf == GameControlData.C_TRUE)
+                        && (data.gameState == GameStates.INITIAL))
+                    || ((data.secGameState == SecondaryGameStates.PENALTYSHOOT)
+                        && (data.gameState == GameStates.INITIAL))))
                 || data.testmode;
     }
 }

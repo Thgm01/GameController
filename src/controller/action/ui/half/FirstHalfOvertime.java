@@ -64,7 +64,10 @@ public class FirstHalfOvertime extends GCAction {
                 && (data.gameState == GameStates.FINISHED)
                 && (data.firstHalf != GameControlData.C_TRUE)
                 && (data.team[0].score == data.team[1].score)
-                && (data.team[0].score > 0)) {
+                && ((data.team[0].score > 0) ||
+                    Rules.league.getClass().getSimpleName().equals("HLSimulationKid") ||
+                    Rules.league.getClass().getSimpleName().equals("HLSimulationAdult"))) //Score > 0 is not required for over time according to the HL Rule book
+        {
             return true;
         }
 

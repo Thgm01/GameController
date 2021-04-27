@@ -3,10 +3,12 @@ package controller.net;
 import controller.EventHandler;
 import controller.SystemClock;
 import controller.action.ActionBoard;
+import controller.action.ui.MakeGoalieAction;
 import data.communication.GameControlReturnData;
 import data.Rules;
 import data.values.Penalties;
 import data.values.PlayerResponses;
+import data.values.Side;
 
 /**
  * @author Marcel Steinbeck, Michel Bartsch
@@ -77,6 +79,11 @@ public class RobotWatcher
             } else if ((gameControlReturnData.message == PlayerResponses.MAN_UNPENALISE)
                     && (EventHandler.getInstance().data.team[team].player[number-1].penalty != Penalties.NONE)) {
                 ActionBoard.manualUnpen[team][number-1].actionPerformed(null);
+            } else if (gameControlReturnData.message == PlayerResponses.GOALKEEPER) {
+                MakeGoalieAction makeGoalie = new MakeGoalieAction(Side.getFromInt(team), number-1);
+                if(makeGoalie.isLegal(EventHandler.getInstance().data)) {
+                    makeGoalie.perform(EventHandler.getInstance().data);
+                }
             }
         }
     }

@@ -23,7 +23,8 @@ public class PlayerInfo implements Serializable
             1 + // penalty
             1 +  // secsToUnpen
             1 + // Numbers of yellow cards
-            1; // Numbers of red cards
+            1 + // Numbers of red cards
+            1; // Whether the robot is the current GoalKeeper
 
     //this is streamed
     public Penalties penalty = Penalties.NONE; // penalty state of the player
@@ -47,6 +48,7 @@ public class PlayerInfo implements Serializable
         buffer.put(secsTillUnpenalised);
         buffer.put(yellowCardCount);
         buffer.put(redCardCount);
+        buffer.put(isGoalie);
         return buffer.array();
     }
 
@@ -63,6 +65,7 @@ public class PlayerInfo implements Serializable
         secsTillUnpenalised = buffer.get();
         yellowCardCount = buffer.get();
         redCardCount = buffer.get();
+        isGoalie = buffer.get();
     }
 
     @Override
@@ -73,6 +76,7 @@ public class PlayerInfo implements Serializable
         out += "secsTillUnpenalised: "+secsTillUnpenalised+"\n";
         out += "yellowCardCount: "+yellowCardCount+"\n";
         out += "redCardCount: "+redCardCount+"\n";
+        out += "isGoalie: "+isGoalie+"\n";
         return out;
     }
 }

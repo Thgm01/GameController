@@ -51,6 +51,11 @@ public class Sender extends Thread {
     private AdvancedData data;
 
     /**
+     *
+     */
+    public static int UPDATEFREQUENCY = 500;
+
+    /**
      * Creates a new Sender.
      *
      * @throws SocketException if an error occurs while creating the socket
@@ -157,7 +162,7 @@ public class Sender extends Thread {
             }
 
             try {
-                Thread.sleep(500);
+                Thread.sleep(UPDATEFREQUENCY);
             } catch (InterruptedException e) {
                 interrupt();
             }
