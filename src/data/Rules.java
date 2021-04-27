@@ -58,6 +58,8 @@ public abstract class Rules
     public boolean kickoffChoice;
     /** Time in seconds the ball is blocked after kickoff. */
     public int kickoffTime;
+    /** Time in seconds the ball is blocked after a game interruption was executed. */
+    public int blockedAfterGameInterruption;
     /** Time in seconds before a global game stuck can be called. */
     public int minDurationBeforeStuck;
     /** The number of seconds switching to Playing is delayed. */

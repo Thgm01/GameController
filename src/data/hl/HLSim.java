@@ -40,6 +40,8 @@ public class HLSim extends Rules
         kickoffChoice = true;
         /** Time in seconds the ball is blocked after kickoff. */
         kickoffTime = 10;
+        /** Time in seconds the ball is blocked after a game interruption was executed. */
+        blockedAfterGameInterruption = 10;
         /** Time in seconds before a global game stuck can be called. */
         minDurationBeforeStuck = 2*60;
         /** The number of seconds switching to Playing is delayed. */

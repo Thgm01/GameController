@@ -45,6 +45,9 @@ public class AdvancedData extends GameControlData implements Cloneable
     
     /** When was switched to the current state? (ms) */
     public long whenCurrentGameStateBegan;
+
+    /** When was switched to the secondary game state? (ms) */
+    public long whenCurrentSecondaryGameStateEnded;
     
     /** How long ago started the current game state? (ms) Only set when written to log! */
     public long timeSinceCurrentGameStateBegan;
@@ -421,6 +424,7 @@ public class AdvancedData extends GameControlData implements Cloneable
             return null;
         }
         int timeKickOffBlocked = getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.kickoffTime);
+        int timeFreeKickBlocked = getRemainingSeconds(whenCurrentSecondaryGameStateEnded, Rules.league.blockedAfterGameInterruption);
         if (kickOffTeam == DROPBALL) {
             timeKickOffBlocked = 0;
         }
@@ -436,6 +440,12 @@ public class AdvancedData extends GameControlData implements Cloneable
                 && timeKickOffBlocked >= -timeKickOffBlockedOvertime) {
             if (timeKickOffBlocked > 0) {
                 return timeKickOffBlocked;
+            } else {
+                return null;
+            }
+        } else if (gameState == GameStates.PLAYING && timeFreeKickBlocked >= -timeKickOffBlockedOvertime) {
+            if (timeFreeKickBlocked > 0) {
+                return timeFreeKickBlocked;
             } else {
                 return null;
             }

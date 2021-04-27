@@ -77,7 +77,7 @@ public class GameInterruption extends GCAction {
                     data.previousSecGameState = secGameState;
                     data.secGameStateInfo.reset();
                     Log.setNextMessage("End " + secGameState.toString() + data.team[side].teamColor.toString());
-                    data.gameClock.addExtraClock(secGameState.toString(), 10);
+                    data.whenCurrentSecondaryGameStateEnded = data.getTime();
                     ActionBoard.clockPause.perform(data);
                     break;
             }
