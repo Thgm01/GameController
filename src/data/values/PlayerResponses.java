@@ -10,6 +10,7 @@ public enum PlayerResponses implements DocumentingMarkdown {
     MAN_UNPENALISE(1, "Manual Unpenalized"),
     ALIVE(2, "Alive"),
     GOALKEEPER(3, "Goalkeeper"),
+    GAME_INTERRUPTION_READY(4, "Ready to execute game interruption"),
 
     UNKNOWN(255, "Unknown");
 

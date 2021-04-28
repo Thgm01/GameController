@@ -88,12 +88,18 @@ public class GameInterruption extends GCAction {
     public boolean isLegal(AdvancedData data)
     {
         if (data.testmode) return true;
-        if (isActive(data)) return true;
+        if (isActive(data) && data.secGameStateInfo.toByteArray()[1] != 1) return true;
         boolean validGameState = data.gameState == GameStates.PLAYING;
         boolean validSecGameState = data.secGameState == SecondaryGameStates.NORMAL
-                    || data.secGameState == SecondaryGameStates.OVERTIME;
+                    || data.secGameState == SecondaryGameStates.OVERTIME
+                    || isActive(data);
+        boolean validTimingOfReady = (data.secGameStateInfo.toByteArray()[1] == 1 //current sub mode is preparation phase
+                    && data.getSecondaryTime (3) != null //a secondary game clock exists
+                    && data.getSecondaryTime(3) < (Rules.league.game_interruption_preparation_time - Rules.league.game_interruption_minimal_ready_time)) //the minimal time guaranteed to the opponent has passed
+                    || !data.secGameState.isGameInterruption() // if there is no game interruption the action is legal
+                    || (data.secGameStateInfo.toByteArray()[1] != 1); //in any other sub mode the action is legal
 
-        return validGameState && validSecGameState;
+        return validGameState && validSecGameState && validTimingOfReady;
     }
 
     public SecondaryGameStates getSecGameState() {

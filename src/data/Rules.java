@@ -123,4 +123,7 @@ public abstract class Rules
 
     /** The time a team has to prepare for the penalty kick **/
     public int penalty_kick_preparation_time;
+
+    /** The time an opponent is guaranteed to move away from the ball in preparation phase **/
+    public int game_interruption_minimal_ready_time;
 }
