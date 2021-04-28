@@ -40,6 +40,8 @@ public class HLSim extends Rules
         kickoffChoice = true;
         /** Time in seconds the ball is blocked after kickoff. */
         kickoffTime = 10;
+        /** Time in seconds the ball is blocked after a game interruption was executed. */
+        blockedAfterGameInterruption = 10;
         /** Time in seconds before a global game stuck can be called. */
         minDurationBeforeStuck = 2*60;
         /** The number of seconds switching to Playing is delayed. */
@@ -111,5 +113,8 @@ public class HLSim extends Rules
 
         /** The time a team has to prepare for the penalty kick **/
         penalty_kick_preparation_time = 30;
+
+        /** The time an opponent is guaranteed to move away from the ball in preparation phase **/
+        game_interruption_minimal_ready_time = 15;
     }
 }

@@ -58,6 +58,8 @@ public abstract class Rules
     public boolean kickoffChoice;
     /** Time in seconds the ball is blocked after kickoff. */
     public int kickoffTime;
+    /** Time in seconds the ball is blocked after a game interruption was executed. */
+    public int blockedAfterGameInterruption;
     /** Time in seconds before a global game stuck can be called. */
     public int minDurationBeforeStuck;
     /** The number of seconds switching to Playing is delayed. */
@@ -121,4 +123,7 @@ public abstract class Rules
 
     /** The time a team has to prepare for the penalty kick **/
     public int penalty_kick_preparation_time;
+
+    /** The time an opponent is guaranteed to move away from the ball in preparation phase **/
+    public int game_interruption_minimal_ready_time;
 }

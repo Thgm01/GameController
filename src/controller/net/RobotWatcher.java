@@ -8,6 +8,7 @@ import data.communication.GameControlReturnData;
 import data.Rules;
 import data.values.Penalties;
 import data.values.PlayerResponses;
+import data.values.SecondaryGameStates;
 import data.values.Side;
 
 /**
@@ -79,12 +80,34 @@ public class RobotWatcher
             } else if ((gameControlReturnData.message == PlayerResponses.MAN_UNPENALISE)
                     && (EventHandler.getInstance().data.team[team].player[number-1].penalty != Penalties.NONE)) {
                 ActionBoard.manualUnpen[team][number-1].actionPerformed(null);
-            } else if (gameControlReturnData.message == PlayerResponses.GOALKEEPER) {
+            }} else if (gameControlReturnData.message == PlayerResponses.GOALKEEPER) {
                 MakeGoalieAction makeGoalie = new MakeGoalieAction(Side.getFromInt(team), number-1);
-                if(makeGoalie.isLegal(EventHandler.getInstance().data)) {
-                    makeGoalie.perform(EventHandler.getInstance().data);
+                    if(makeGoalie.isLegal(EventHandler.getInstance().data)) {
+                        makeGoalie.perform(EventHandler.getInstance().data);
+                    }
+            }  else if (gameControlReturnData.message == PlayerResponses.GAME_INTERRUPTION_READY) {
+                if (EventHandler.getInstance().data.secGameStateInfo.toByteArray()[1] == 1 // we are currently in the preparation phase
+                        && EventHandler.getInstance().data.secGameStateInfo.toByteArray()[0] == gameControlReturnData.team) { // the robot is from the team begin allowed to execute the game interruption
+                    if (EventHandler.getInstance().data.secGameState == SecondaryGameStates.DIRECT_FREEKICK
+                            && ActionBoard.directFreeKick[team].isLegal(EventHandler.getInstance().data)) {
+                        ActionBoard.directFreeKick[team].perform(EventHandler.getInstance().data);
+                    } else if (EventHandler.getInstance().data.secGameState == SecondaryGameStates.INDIRECT_FREEKICK
+                            && ActionBoard.indirectFreeKick[team].isLegal(EventHandler.getInstance().data)) {
+                        ActionBoard.indirectFreeKick[team].perform(EventHandler.getInstance().data);
+                    } else if (EventHandler.getInstance().data.secGameState == SecondaryGameStates.CORNER_KICK
+                            && ActionBoard.cornerKick[team].isLegal(EventHandler.getInstance().data)) {
+                        ActionBoard.cornerKick[team].perform(EventHandler.getInstance().data);
+                    } else if (EventHandler.getInstance().data.secGameState == SecondaryGameStates.GOAL_KICK
+                            && ActionBoard.goalKick[team].isLegal(EventHandler.getInstance().data)) {
+                        ActionBoard.goalKick[team].perform(EventHandler.getInstance().data);
+                    } else if (EventHandler.getInstance().data.secGameState == SecondaryGameStates.THROW_IN
+                            && ActionBoard.throwIn[team].isLegal(EventHandler.getInstance().data)) {
+                        ActionBoard.throwIn[team].perform(EventHandler.getInstance().data);
+                    } else if (EventHandler.getInstance().data.secGameState == SecondaryGameStates.PENALTYKICK
+                            && ActionBoard.penaltyKick[team].isLegal(EventHandler.getInstance().data)) {
+                        ActionBoard.penaltyKick[team].perform(EventHandler.getInstance().data);
+                    }
                 }
-            }
         }
     }
 

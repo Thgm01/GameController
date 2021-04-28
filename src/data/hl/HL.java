@@ -111,5 +111,8 @@ public class HL extends Rules
 
         /** The time a team has to prepare for the penalty kick **/
         penalty_kick_preparation_time = 30;
+
+        /** The time an opponent is guaranteed to move away from the ball in preparation phase **/
+        game_interruption_minimal_ready_time = 15;
     }
 }

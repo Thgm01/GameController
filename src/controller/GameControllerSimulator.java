@@ -3,6 +3,7 @@ package controller;
 import common.ApplicationLock;
 import common.Log;
 import controller.action.ActionBoard;
+import controller.action.ui.MakeGoalieAction;
 import controller.net.GameControlReturnDataReceiver;
 import controller.net.SPLCoachMessageReceiver;
 import controller.net.Sender;
@@ -19,6 +20,7 @@ import data.states.AdvancedData;
 import data.states.GamePreparationData;
 import data.teams.TeamLoadInfo;
 import data.values.GameTypes;
+import data.values.Side;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 
@@ -319,6 +321,11 @@ public class GameControllerSimulator {
         if (testMode) {
             Rules.league.delayedSwitchToPlaying = 0;
         }
+
+        MakeGoalieAction makeGoalieLeft = new MakeGoalieAction(Side.getFromInt(0),0);
+        makeGoalieLeft.perform(data);
+        MakeGoalieAction makeGoalieRight = new MakeGoalieAction(Side.getFromInt(1),0);
+        makeGoalieRight.perform(data);
 
         SystemClock.setSimulatedTime();
 
