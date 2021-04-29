@@ -143,6 +143,15 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                         actionRejected(values[0]);
                         break;
                     }
+                } else if (values.length == 4 && values[3].equals("ABORT")) {
+                    if(ActionBoard.abortGameInterruptions[side].isLegal(data)) {
+                        ActionBoard.abortGameInterruptions[side].perform(data);
+                        actionAccepted(values[0]);
+                    }
+                    else {
+                        actionRejected(values[0]);
+                        break;
+                    }
                 }
                 else {
                     actionRejected(values[0]);

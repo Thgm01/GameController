@@ -4,10 +4,8 @@ import common.TotalScaleLayout;
 import controller.action.ActionBoard;
 import controller.action.ui.*;
 import controller.ui.localization.LocalizationManager;
+import controller.ui.ui.customized.*;
 import controller.ui.ui.customized.Button;
-import controller.ui.ui.customized.GameInterruptionButton;
-import controller.ui.ui.customized.JMultiStepIndicatorButton;
-import controller.ui.ui.customized.RetakeButton;
 import data.states.AdvancedData;
 import data.values.SecondaryGameStates;
 import data.values.Side;
@@ -27,6 +25,7 @@ public class HLTeamActions extends TeamActions {
     private GameInterruptionButton goalKick;
     private GameInterruptionButton throwIn;
     private RetakeButton retake;
+    private AbortButton abort;
 
     public HLTeamActions(Side side) {
         super(side);
@@ -50,6 +49,8 @@ public class HLTeamActions extends TeamActions {
         goalKick = new GameInterruptionButton(LocalizationManager.getLocalization().GOAL_KICK);
         throwIn = new GameInterruptionButton(LocalizationManager.getLocalization().THROW_IN);
         retake = new RetakeButton(LocalizationManager.getLocalization().RETAKE);
+        abort = new AbortButton(LocalizationManager.getLocalization().ABORT);
+
 
         directFreeKick.addActionListener(new DirectFreeKick(side.value()));
         indirectFreeKick.addActionListener(new IndirectFreeKick(side.value()));
@@ -58,8 +59,9 @@ public class HLTeamActions extends TeamActions {
         goalKick.addActionListener(new GoalKick(side.value()));
         throwIn.addActionListener(new ThrowIn(side.value()));
         retake.addActionListener(new RetakeGameInterruption(side.value()));
+        abort.addActionListener(new AbortGameInterruption(side.value()));
 
-        int nb_rows = 8;
+        int nb_rows = 9;
         int row = 0;
         double row_height = 1.0 / nb_rows;
         layout.add(0, 0, 1, row_height, timeOut); row++;
@@ -70,6 +72,7 @@ public class HLTeamActions extends TeamActions {
         layout.add(0, row * row_height, 1, row_height, goalKick);row++;
         layout.add(0, row * row_height, 1, row_height, throwIn);row++;
         layout.add(0, row * row_height, 1, row_height, retake);row++;
+        layout.add(0, row * row_height, 1, row_height, abort);row++;
 
         timeOut.setVisible(true);
 
@@ -93,6 +96,8 @@ public class HLTeamActions extends TeamActions {
 
         boolean isRetakeAllowed = new RetakeGameInterruption(side.value()).isLegal(data);
         retake.setEnabled(isRetakeAllowed);
+        boolean isAbortInterruptionAllowed = new AbortGameInterruption(side.value()).isLegal(data);
+        abort.setEnabled(isAbortInterruptionAllowed);
     }
 
     private void update(AdvancedData data, GameInterruptionButton button, GameInterruption action) {
