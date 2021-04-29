@@ -9,6 +9,9 @@ import data.values.GameTypes;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author Marcel Steinbeck
@@ -49,6 +52,10 @@ public class Sender extends Thread {
      * The current deep copy of the game-state.
      */
     private AdvancedData data;
+
+    private final ReadWriteLock readWriteLockData = new ReentrantReadWriteLock();
+    private final Lock readLockData = readWriteLockData.readLock();
+    private final Lock writeLockData = readWriteLockData.writeLock();
 
     /**
      *
@@ -138,27 +145,37 @@ public class Sender extends Thread {
             }
         }
 
-        // Clone data
-        this.data = (AdvancedData) data.clone();
+        writeLockData.lock();
+        try {
+            // Clone data
+            this.data = (AdvancedData) data.clone();
+        } finally {
+            writeLockData.unlock();
+        }
     }
 
     @Override
     public void run() {
         while (!isInterrupted()) {
-            if (data != null) {
-                data.updateTimes();
-                data.packetNumber = packetNumber;
-                teamcomm.net.logging.Logger.getInstance().log(data);
-                byte[] arr = data.toByteArray().array();
-                DatagramPacket packet = new DatagramPacket(arr, arr.length, group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
+            readLockData.lock();
+            try {
+                if (data != null) {
+                    data.updateTimes();
+                    data.packetNumber = packetNumber;
+                    teamcomm.net.logging.Logger.getInstance().log(data);
+                    byte[] arr = data.toByteArray().array();
+                    DatagramPacket packet = new DatagramPacket(arr, arr.length, group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
 
-                try {
-                    datagramSocket.send(packet);
-                    packetNumber++;
-                } catch (IOException e) {
-                    Log.error("Error while sending");
-                    e.printStackTrace();
+                    try {
+                        datagramSocket.send(packet);
+                        packetNumber++;
+                    } catch (IOException e) {
+                        Log.error("Error while sending");
+                        e.printStackTrace();
+                    }
                 }
+            } finally {
+                readLockData.unlock();
             }
 
             try {
