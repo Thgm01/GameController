@@ -13,6 +13,7 @@ public class Localization {
     public final String THROW_IN = "Throw-In";
 
     public final String RETAKE = "Retake";
+    public final String ABORT = "Abort";
 
     public final String COACH = "Coach";
     public final String EJECTED = "Ejected";

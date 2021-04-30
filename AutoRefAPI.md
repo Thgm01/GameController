@@ -167,7 +167,7 @@ Format: ``<id>:<interruption>:<team_id>:<action>``
 
 Accepted Interruptions: ``DIRECT_FREEKICK|INDIRECT_FREEKICK|PENALTYKICK|CORNERKICK|GOALKICK|THROWIN``
 
-Accepted Actions: ``<empty>|READY|PREPARE|EXECUTE|RETAKE``
+Accepted Actions: ``<empty>|READY|PREPARE|EXECUTE|RETAKE|ABORT``
 
 Game Interruptions cover the behavior of the GameController for the Direct and Indirect Free Kick,
 Penalty Kicks, Corner Kicks and Throw-Ins.
@@ -186,6 +186,9 @@ to send the actions in the expected order:
 ````
 At any point between the game interruption being called with the initial command and the ``EXECTUTE`` command, it can be reset to the initial state
 by calling ``<id>:<interruption>:<team_id>:RETAKE``.
+
+At any point between the game interruption being called with the initial command and the ``EXECTUTE`` command, it can be cancelled
+by calling ``<id>:<interruption>:<team_id>:ABORT``.
 
 ### Score
 

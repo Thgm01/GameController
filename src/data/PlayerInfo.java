@@ -22,6 +22,7 @@ public class PlayerInfo implements Serializable
     public static final int SIZE =
             1 + // penalty
             1 +  // secsToUnpen
+            1 + // number of warnings
             1 + // Numbers of yellow cards
             1 + // Numbers of red cards
             1; // Whether the robot is the current GoalKeeper
@@ -46,6 +47,7 @@ public class PlayerInfo implements Serializable
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         buffer.put(penalty.value());
         buffer.put(secsTillUnpenalised);
+        buffer.put(warningCardCount);
         buffer.put(yellowCardCount);
         buffer.put(redCardCount);
         buffer.put(isGoalie);
@@ -63,6 +65,7 @@ public class PlayerInfo implements Serializable
         buffer.order(ByteOrder.LITTLE_ENDIAN);
         penalty = Penalties.fromValue(buffer.get());
         secsTillUnpenalised = buffer.get();
+        warningCardCount = buffer.get();
         yellowCardCount = buffer.get();
         redCardCount = buffer.get();
         isGoalie = buffer.get();
@@ -74,6 +77,7 @@ public class PlayerInfo implements Serializable
         String out = "----------------------------------------\n";
         out += "            penalty: "+penalty.toString()+"\n";
         out += "secsTillUnpenalised: "+secsTillUnpenalised+"\n";
+        out += "warningCardCount: "+warningCardCount+"\n";
         out += "yellowCardCount: "+yellowCardCount+"\n";
         out += "redCardCount: "+redCardCount+"\n";
         out += "isGoalie: "+isGoalie+"\n";
