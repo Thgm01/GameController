@@ -22,12 +22,9 @@ public class PickUpHL extends Penalty
     @Override
     public void performOn(AdvancedData data, PlayerInfo player, int side, int number)
     {
-        if (player.penalty == Penalties.NONE) {
-            data.whenPenalized[side][number] = data.getTime();
-        }
-
         player.penalty = Penalties.HL_PICKUP_OR_INCAPABLE;
         handleRepeatedPenalty(data, player, side, number);
+        data.whenPenalized[side][number] = data.getTime();
         data.isServingPenalty[side][number] = false;
         Log.state(data, "Request for PickUp / Incapable Player " + data.team[side].teamColor + " " + (number+1));
     }
