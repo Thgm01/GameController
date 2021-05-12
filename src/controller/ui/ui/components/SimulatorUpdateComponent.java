@@ -304,9 +304,9 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 else { actionRejected(values[0]); }
                 break;
             case "PHYSICAL_CONTACT":
-                if (ActionBoard.teammatePushing.isLegal(data)) {
+                if (ActionBoard.hlPushing.isLegal(data)) {
                     PlayerInfo pi = data.team[side].player[robot_number];
-                    ActionBoard.teammatePushing.performOn(data, pi, side, robot_number);
+                    ActionBoard.hlPushing.performOn(data, pi, side, robot_number);
                     data.isServingPenalty[side][robot_number] = true;
                     actionAccepted(values[0]);
                 }

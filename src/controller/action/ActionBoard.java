@@ -54,6 +54,7 @@ public class ActionBoard {
     public static Finish finish;
     public static BallManipulation ballManipulation;
     public static PickUpHL pickUpHL;
+    public static HLPushing hlPushing;
     public static TeammatePushing teammatePushing;
     public static Substitute substitute;
     public static DropBall dropBall;
@@ -130,6 +131,7 @@ public class ActionBoard {
         ballManipulation = new BallManipulation();
 
         pickUpHL = new PickUpHL();
+        hlPushing = new HLPushing();
         teammatePushing = new TeammatePushing();
         substitute = new Substitute();
         dropBall = new DropBall();
