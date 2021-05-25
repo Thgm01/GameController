@@ -85,6 +85,7 @@ public class Sender extends Thread {
      * @throws IllegalStateException if the sender is already initialized
      */
     public synchronized static void initialize(final InetAddress broadcastAddress) throws SocketException, UnknownHostException {
+        System.out.println("Initializing Broadcasting server on " + broadcastAddress);
         if (null != instance) {
             throw new IllegalStateException("sender is already initialized");
         } else {
