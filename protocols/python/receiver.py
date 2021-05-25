@@ -95,6 +95,7 @@ class GameStateReceiver(object):
         try:
             data, peer = self.socket.recvfrom(GameState.sizeof())
 
+            print(len(data))
             # Throws a ConstError if it doesn't work
             parsed_state = GameState.parse(data)
 
@@ -159,8 +160,8 @@ class GameStateReceiver(object):
 class SampleGameStateReceiver(GameStateReceiver):
 
     def on_new_gamestate(self, state):
-        print(state.teams[0].players[0].penalty)
-        #print(state.secondary_state_info)
+       print(state)
+       print(state.secondary_state_info)
 
 if __name__ == '__main__':
     args = parser.parse_args(sys.argv[1:])
