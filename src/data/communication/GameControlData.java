@@ -26,7 +26,7 @@ public class GameControlData implements Serializable
 
     /** Some constants from the C-structure. */
     public static final int GAMECONTROLLER_RETURNDATA_PORT = 3939; // port to receive return-packets on
-    public static final int GAMECONTROLLER_GAMEDATA_PORT= 3838; // port to send game state packets to
+    public static int GAMECONTROLLER_GAMEDATA_PORT= 3838; // port to send game state packets to
 
     public static final String GAMECONTROLLER_STRUCT_HEADER = "RGme";
     public static final byte GAMECONTROLLER_STRUCT_VERSION = 12;

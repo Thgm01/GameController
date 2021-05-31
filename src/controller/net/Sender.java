@@ -165,7 +165,7 @@ public class Sender extends Thread {
                     data.packetNumber = packetNumber;
                     teamcomm.net.logging.Logger.getInstance().log(data);
                     byte[] arr = data.toByteArray().array();
-                    DatagramPacket packet = new DatagramPacket(arr, arr.length, group, GameControlData.GAMECONTROLLER_GAMEDATA_PORT);
+                    DatagramPacket packet = new DatagramPacket(arr, arr.length, group, data.GAMECONTROLLER_GAMEDATA_PORT);
 
                     try {
                         datagramSocket.send(packet);
