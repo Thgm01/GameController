@@ -7,14 +7,12 @@ Short = Int16ul
 
 RobotInfo = "robot_info" / Struct(
     # define NONE                        0
-    # define PENALTY_HL_KID_BALL_MANIPULATION    1
-    # define PENALTY_HL_KID_PHYSICAL_CONTACT     2
-    # define PENALTY_HL_KID_ILLEGAL_ATTACK       3
-    # define PENALTY_HL_KID_ILLEGAL_DEFENSE      4
-    # define PENALTY_HL_KID_REQUEST_FOR_PICKUP   5
-    # define PENALTY_HL_KID_REQUEST_FOR_SERVICE  6
-    # define PENALTY_HL_KID_REQUEST_FOR_PICKUP_2_SERVICE 7
-    # define MANUAL                      15
+    #define HL_BALL_MANIPULATION                30
+    #define HL_PHYSICAL_CONTACT                 31
+    #define HL_ILLEGAL_ATTACK                   32
+    #define HL_ILLEGAL_DEFENSE                  33
+    #define HL_PICKUP_OR_INCAPABLE              34
+    #define HL_SERVICE                          35
     "penalty" / Byte,
     "secs_till_unpenalized" / Byte,
     "number_of_warnings" / Byte,
