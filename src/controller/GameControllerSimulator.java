@@ -24,13 +24,12 @@ import data.values.Side;
 import org.json.simple.*;
 import org.json.simple.parser.JSONParser;
 
+import java.net.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.Inet4Address;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,6 +67,7 @@ public class GameControllerSimulator {
             + "\n  (-w | --window)                 select window mode (default is fullscreen)"
             + "\n  (-p | --port) <port>             set port the AutoReferee connects to (default is 8750)"
             + "\n  (-c | --config) <path/to/game.json>   sets a custom game.json to launch the game from (uses the resource folder by default)"
+            + "\n  (-b | --broadcast) <ip>   IP address of the broadcasting server. local broadcast by default"
             + "\n";
     private static final String COMMAND_INTERFACE = "--interface";
     private static final String COMMAND_INTERFACE_SHORT = "-i";
@@ -83,6 +83,8 @@ public class GameControllerSimulator {
     private static final String COMMAND_CONFIG_SHORT = "-c";
     private static final String COMMAND_FAST= "--fast";
     private static final String COMMAND_FAST_SHORT = "-f";
+    private static final String COMMAND_BROADCAST= "--broadcast";
+    private static final String COMMAND_BROADCAST_SHORT = "-b";
 
     /** Dynamically settable path to the config root folder */
     private static final String CONFIG_ROOT = System.getProperty("CONFIG_ROOT", "");
@@ -92,6 +94,8 @@ public class GameControllerSimulator {
     private static String CONFIG = PATH + "/sim/game.json";
     /** The charset to read the config file. */
     private final static String CHARSET = "UTF-8";
+
+    private static InetAddress BROADCAST_IP = null;
 
     /**
      * The program starts here.
@@ -139,6 +143,13 @@ public class GameControllerSimulator {
                 continue parsing;
             } else if (args[i].equals(COMMAND_FAST_SHORT) || args[i].equals(COMMAND_FAST)) {
                 fastMode = true;
+                continue parsing;
+            } else if (args[i].equals(COMMAND_BROADCAST) || args[i].equals(COMMAND_BROADCAST_SHORT)) {
+                try {
+                    BROADCAST_IP = InetAddress.getByName(args[++i]);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
                 continue parsing;
             }
             String leagues = "";
@@ -329,9 +340,16 @@ public class GameControllerSimulator {
 
         SystemClock.setSimulatedTime();
 
+        if (BROADCAST_IP == null){
+            BROADCAST_IP = localAddress.getBroadcast() == null ? localAddress.getAddress() : localAddress.getBroadcast();
+        }
+        else {
+            data.GAMECONTROLLER_GAMEDATA_PORT = 3839;
+        }
+
         try {
             //sender
-            Sender.initialize(localAddress.getBroadcast() == null ? localAddress.getAddress() : localAddress.getBroadcast());
+            Sender.initialize(BROADCAST_IP);
             Sender sender = Sender.getInstance();
             sender.send(data);
             sender.start();
