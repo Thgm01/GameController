@@ -343,6 +343,9 @@ public class GameControllerSimulator {
         if (BROADCAST_IP == null){
             BROADCAST_IP = localAddress.getBroadcast() == null ? localAddress.getAddress() : localAddress.getBroadcast();
         }
+        else {
+            data.GAMECONTROLLER_GAMEDATA_PORT = 3839;
+        }
 
         try {
             //sender
