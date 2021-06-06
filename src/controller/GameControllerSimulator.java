@@ -68,6 +68,7 @@ public class GameControllerSimulator {
             + "\n  (-p | --port) <port>             set port the AutoReferee connects to (default is 8750)"
             + "\n  (-c | --config) <path/to/game.json>   sets a custom game.json to launch the game from (uses the resource folder by default)"
             + "\n  (-b | --broadcast) <ip>   IP address of the broadcasting server. local broadcast by default"
+            + "\n  (-d | --halftimeduration) <time in seconds>   Sets the time in seconds of the half time length"
             + "\n";
     private static final String COMMAND_INTERFACE = "--interface";
     private static final String COMMAND_INTERFACE_SHORT = "-i";
@@ -85,6 +86,8 @@ public class GameControllerSimulator {
     private static final String COMMAND_FAST_SHORT = "-f";
     private static final String COMMAND_BROADCAST= "--broadcast";
     private static final String COMMAND_BROADCAST_SHORT = "-b";
+    private static final String COMMAND_HALFTIME_SHORT = "-d";
+    private static final String COMMAND_HALFTIME = "--halftimeduration";
 
     /** Dynamically settable path to the config root folder */
     private static final String CONFIG_ROOT = System.getProperty("CONFIG_ROOT", "");
@@ -96,6 +99,8 @@ public class GameControllerSimulator {
     private final static String CHARSET = "UTF-8";
 
     private static InetAddress BROADCAST_IP = null;
+
+    private static int half_time_length = 0;
 
     /**
      * The program starts here.
@@ -150,6 +155,9 @@ public class GameControllerSimulator {
                 } catch (UnknownHostException e) {
                     e.printStackTrace();
                 }
+                continue parsing;
+            } else if (args[i].equals(COMMAND_HALFTIME) || args[i].equals(COMMAND_HALFTIME_SHORT)) {
+                half_time_length = Integer.parseInt(args[++i]);
                 continue parsing;
             }
             String leagues = "";
@@ -289,6 +297,9 @@ public class GameControllerSimulator {
         if (size_class.equals("ADULT")) {
             gpd.switchRules(new HLSimulationAdult());
             Rules.league = Rules.LEAGUES[4];
+        }
+        if (half_time_length > 0) {
+            Rules.league.halfTime = half_time_length;
         }
 
         if (match_type.equals("NORMAL")) {
