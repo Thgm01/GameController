@@ -346,6 +346,8 @@ public class SimulatorUpdateComponent extends AbstractComponent{
             case "FINISH":
                 if(ActionBoard.finish.isLegal(data)) {
                     ActionBoard.finish.actionPerformed(null);
+                    data.resetPenaltyTimes();
+                    data.resetPenalties();
                     actionAccepted(values[0]);
                 }
                 else { actionRejected(values[0]); }
