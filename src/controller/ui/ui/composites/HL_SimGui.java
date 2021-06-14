@@ -19,7 +19,7 @@ public class HL_SimGui extends AbstractUI {
 
     private ButtonGroup kickOffGroup;
 
-    public HL_SimGui(boolean fullscreen, AdvancedData data, GamePreparationData gamePrepData, int port) {
+    public HL_SimGui(boolean fullscreen, AdvancedData data, GamePreparationData gamePrepData, int port, boolean minimized) {
         super(fullscreen, data, gamePrepData);
 
         try {
@@ -42,6 +42,9 @@ public class HL_SimGui extends AbstractUI {
         this.setSize(600, 400);
         this.getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
         this.setVisible(true);
+        if(minimized) {
+            this.setState(JFrame.ICONIFIED);
+        }
     }
 
     private void setupUI() {
