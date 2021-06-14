@@ -69,6 +69,7 @@ public class GameControllerSimulator {
             + "\n  (-c | --config) <path/to/game.json>   sets a custom game.json to launch the game from (uses the resource folder by default)"
             + "\n  (-b | --broadcast) <ip>   IP address of the broadcasting server. local broadcast by default"
             + "\n  (-d | --halftimeduration) <time in seconds>   Sets the time in seconds of the half time length"
+            + "\n  (-m | --minimized)    If this flag is present, the JFrame is initially minimized"
             + "\n";
     private static final String COMMAND_INTERFACE = "--interface";
     private static final String COMMAND_INTERFACE_SHORT = "-i";
@@ -88,6 +89,8 @@ public class GameControllerSimulator {
     private static final String COMMAND_BROADCAST_SHORT = "-b";
     private static final String COMMAND_HALFTIME_SHORT = "-d";
     private static final String COMMAND_HALFTIME = "--halftimeduration";
+    private static final String COMMAND_MINIMIZED_SHORT = "-m";
+    private static final String COMMAND_MINIMIZED = "--minimized";
 
     /** Dynamically settable path to the config root folder */
     private static final String CONFIG_ROOT = System.getProperty("CONFIG_ROOT", "");
@@ -116,6 +119,7 @@ public class GameControllerSimulator {
         boolean windowMode = false;
         boolean testMode = false;
         boolean fastMode = false;
+        boolean minimized = false;
 
         parsing:
         for (int i = 0; i < args.length; i++) {
@@ -148,6 +152,9 @@ public class GameControllerSimulator {
                 continue parsing;
             } else if (args[i].equals(COMMAND_FAST_SHORT) || args[i].equals(COMMAND_FAST)) {
                 fastMode = true;
+                continue parsing;
+            } else if (args[i].equals(COMMAND_MINIMIZED_SHORT) || args[i].equals(COMMAND_MINIMIZED)) {
+                minimized = true;
                 continue parsing;
             } else if (args[i].equals(COMMAND_BROADCAST) || args[i].equals(COMMAND_BROADCAST_SHORT)) {
                 try {
@@ -415,7 +422,7 @@ public class GameControllerSimulator {
                 + ") vs " + Teams.getNames(false)[data.team[1].teamNumber]
                 + " (" + data.team[1].teamColor + ")");
 
-        GCGUI gui = new HL_SimGui(gpd.getFullScreen(), data, gpd, port);
+        GCGUI gui = new HL_SimGui(gpd.getFullScreen(), data, gpd, port, minimized);
 
         new KeyboardListener();
         EventHandler.getInstance().setGUI(gui);
