@@ -41,10 +41,11 @@ public class HL_SimGui extends AbstractUI {
         // Setup an initial size and layout
         this.setSize(600, 400);
         this.getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
-        this.setVisible(true);
         if(minimized) {
             this.setState(JFrame.ICONIFIED);
         }
+        this.setVisible(true);
+
     }
 
     private void setupUI() {
