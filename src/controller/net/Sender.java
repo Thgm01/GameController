@@ -158,7 +158,7 @@ public class Sender extends Thread {
     @Override
     public void run() {
         while (!isInterrupted()) {
-            readLockData.lock();
+            writeLockData.lock();
             try {
                 if (data != null) {
                     data.updateTimes();
@@ -176,7 +176,7 @@ public class Sender extends Thread {
                     }
                 }
             } finally {
-                readLockData.unlock();
+                writeLockData.unlock();
             }
 
             try {
