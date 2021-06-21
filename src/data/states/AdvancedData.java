@@ -375,7 +375,7 @@ public class AdvancedData extends GameControlData implements Cloneable
         }
         //This ensures that goal keepers being penalized during a penalty shoot-out cannot return back to the field
         if(secGameState == SecondaryGameStates.PENALTYSHOOT && team[side].player[number].isGoalie == 1) {
-            penaltyTime = 60;
+            penaltyTime = 120;
         }
         assert penalty == Penalties.MANUAL || penalty == Penalties.SUBSTITUTE || penaltyTime != -1;
         if (penalty == Penalties.MANUAL || penalty == Penalties.SUBSTITUTE) {
