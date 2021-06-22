@@ -100,10 +100,6 @@ public class GameInterruption extends GCAction {
                     || !data.secGameState.isGameInterruption() // if there is no game interruption the action is legal
                     || (data.secGameStateInfo.toByteArray()[1] != 1); //in any other sub mode the action is legal
 
-        if (data.secGameStateInfo.toByteArray()[1] == 1 //current sub mode is preparation phase
-                && data.getSecondaryTime (3) != null) { //a secondary game clock exists)
-            System.out.println("The remaining time before being allowed to switch the game state is: " + data.getSecondaryTime(3));
-        }
         return validGameState && validSecGameState && validTimingOfReady;
     }
 

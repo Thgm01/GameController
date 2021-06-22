@@ -69,6 +69,7 @@ public class GameControllerSimulator {
             + "\n  (-c | --config) <path/to/game.json>   sets a custom game.json to launch the game from (uses the resource folder by default)"
             + "\n  (-b | --broadcast) <ip>   IP address of the broadcasting server. local broadcast by default"
             + "\n  (-d | --halftimeduration) <time in seconds>   Sets the time in seconds of the half time length"
+            + "\n  (-o | --overtimeduration) <time in seconds>   Sets the time in seconds of the overtime halt-time length"
             + "\n  (-m | --minimized)    If this flag is present, the JFrame is initially minimized"
             + "\n";
     private static final String COMMAND_INTERFACE = "--interface";
@@ -89,6 +90,8 @@ public class GameControllerSimulator {
     private static final String COMMAND_BROADCAST_SHORT = "-b";
     private static final String COMMAND_HALFTIME_SHORT = "-d";
     private static final String COMMAND_HALFTIME = "--halftimeduration";
+    private static final String COMMAND_OVERTIME_SHORT = "-o";
+    private static final String COMMAND_OVERTIME = "--overtimeduration";
     private static final String COMMAND_MINIMIZED_SHORT = "-m";
     private static final String COMMAND_MINIMIZED = "--minimized";
 
@@ -104,6 +107,7 @@ public class GameControllerSimulator {
     private static InetAddress BROADCAST_IP = null;
 
     private static int half_time_length = 0;
+    private static int over_time_length = 0;
 
     /**
      * The program starts here.
@@ -165,6 +169,10 @@ public class GameControllerSimulator {
                 continue parsing;
             } else if (args[i].equals(COMMAND_HALFTIME) || args[i].equals(COMMAND_HALFTIME_SHORT)) {
                 half_time_length = Integer.parseInt(args[++i]);
+                continue parsing;
+            }
+            else if (args[i].equals(COMMAND_OVERTIME) || args[i].equals(COMMAND_OVERTIME_SHORT)) {
+                over_time_length = Integer.parseInt(args[++i]);
                 continue parsing;
             }
             String leagues = "";
@@ -307,6 +315,10 @@ public class GameControllerSimulator {
         }
         if (half_time_length > 0) {
             Rules.league.halfTime = half_time_length;
+        }
+
+        if (over_time_length > 0) {
+            Rules.league.overtimeTime = over_time_length;
         }
 
         if (match_type.equals("NORMAL")) {
