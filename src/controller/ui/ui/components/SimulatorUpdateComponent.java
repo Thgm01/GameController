@@ -7,6 +7,7 @@ import data.PlayerInfo;
 import data.Rules;
 import data.states.AdvancedData;
 import data.values.Penalties;
+import data.values.SecondaryGameStates;
 import data.values.Side;
 
 import java.awt.*;
@@ -337,8 +338,10 @@ public class SimulatorUpdateComponent extends AbstractComponent{
             case "PLAY":
                 if(ActionBoard.play.isLegal(data)) {
                     ActionBoard.play.actionPerformed(null);
-                    data.resetPenaltyTimes();
-                    data.resetPenalties();
+                    if (data.secGameState != SecondaryGameStates.PENALTYSHOOT) {
+                        data.resetPenaltyTimes();
+                        data.resetPenalties();
+                    }
                     actionAccepted(values[0]);
                 }
                 else { actionRejected(values[0]); }
