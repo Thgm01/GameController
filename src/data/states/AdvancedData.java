@@ -310,6 +310,10 @@ public class AdvancedData extends GameControlData implements Cloneable
                 && (gameState == GameStates.INITIAL && firstHalf != C_TRUE && !timeOutActive[0] && !timeOutActive[1]
                 || gameState == GameStates.FINISHED && firstHalf == C_TRUE)) {
             return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.pauseTime);
+        } else if (secGameState == SecondaryGameStates.OVERTIME
+            && (gameState == GameStates.INITIAL && firstHalf != C_TRUE && !timeOutActive[0] && !timeOutActive[1]
+            || gameState == GameStates.FINISHED && firstHalf == C_TRUE)) {
+            return getRemainingSeconds(whenCurrentGameStateBegan, Rules.league.pauseOverTime);
         } else if (Rules.league.pausePenaltyShootOutTime != 0 && (gameType == GameTypes.PLAYOFF) && team[0].score == team[1].score
                 && (gameState == GameStates.INITIAL && secGameState == SecondaryGameStates.PENALTYSHOOT && !timeOutActive[0] && !timeOutActive[1]
                 || gameState == GameStates.FINISHED && firstHalf != C_TRUE)) {
