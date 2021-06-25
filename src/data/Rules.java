@@ -54,6 +54,8 @@ public abstract class Rules
     public int readyTime;
     /** Time in seconds between first and second half. */
     public int pauseTime;
+    /** Time in seconds between first and second overtime half. */
+    public int pauseOverTime;
     /** If left and right side may both have the first kickoff. */
     public boolean kickoffChoice;
     /** Time in seconds the ball is blocked after kickoff. */

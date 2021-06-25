@@ -8,6 +8,7 @@ import data.communication.GameControlData;
 import data.Rules;
 import data.values.GameStates;
 import data.values.GameTypes;
+import data.values.SecondaryGameStates;
 
 
 /**
@@ -40,8 +41,10 @@ public class ClockTick extends GCAction
         } else if (data.gameState == GameStates.FINISHED) {
             Integer remainingPauseTime = data.getRemainingPauseTime();
             if (remainingPauseTime != null) {
-                if (data.firstHalf == GameControlData.C_TRUE && remainingPauseTime <= Rules.league.pauseTime / 2) {
+                if (data.firstHalf == GameControlData.C_TRUE && remainingPauseTime <= Rules.league.pauseTime / 2 && data.secGameState == SecondaryGameStates.NORMAL) {
                     ActionBoard.secondHalf.perform(data);
+                } else if (data.firstHalf == GameControlData.C_TRUE && remainingPauseTime <= Rules.league.pauseOverTime / 2 && data.secGameState == SecondaryGameStates.OVERTIME) {
+                    ActionBoard.secondHalfOvertime.perform(data);
                 } else if (data.firstHalf != GameControlData.C_TRUE && remainingPauseTime <= Rules.league.pausePenaltyShootOutTime / 2) {
                     ActionBoard.penaltyShoot.perform(data);
                 }
