@@ -86,7 +86,6 @@ public class SimulatorUpdateComponent extends AbstractComponent{
                 }
                 if(ActionBoard.kickOff[side].isLegal(data)) {
                     ActionBoard.kickOff[side].perform(data);
-                    if(side == 1) { data.leftSideKickoff = true; }
                     actionAccepted(values[0]);
                 }
                 else { actionRejected(values[0]); }
