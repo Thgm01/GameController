@@ -116,5 +116,8 @@ public class HL extends Rules
 
         /** The time an opponent is guaranteed to move away from the ball in preparation phase **/
         game_interruption_minimal_ready_time = 15;
+
+        /** In Playoffs, it can be enabled to make up for the READY and SET time by adding them to the game for each time the phase was entered**/
+        enableAddingTimeInCurrentStateForPlayoffs = true;
     }
 }
