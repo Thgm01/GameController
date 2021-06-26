@@ -3,6 +3,7 @@ package controller.action.ui.state;
 import common.Log;
 import controller.action.ActionType;
 import controller.action.GCAction;
+import data.Rules;
 import data.states.AdvancedData;
 import data.values.GameStates;
 import data.values.GameTypes;
@@ -35,7 +36,7 @@ public class Play extends GCAction
         if (data.gameState == GameStates.PLAYING) {
             return;
         }
-        if ((data.gameType != GameTypes.PLAYOFF) && data.timeBeforeCurrentGameState != 0) {
+        if ((data.gameType != GameTypes.PLAYOFF || !Rules.league.enableAddingTimeInCurrentStateForPlayoffs) && data.timeBeforeCurrentGameState != 0) {
             data.addTimeInCurrentState();
         }
         data.whenCurrentGameStateBegan = data.getTime();

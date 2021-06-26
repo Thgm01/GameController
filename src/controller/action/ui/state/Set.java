@@ -37,7 +37,7 @@ public class Set extends GCAction {
         if (Rules.league.returnRobotsInGameStoppages) {
             data.resetPenaltyTimes();
         }
-        if ((data.gameType != GameTypes.PLAYOFF) && data.timeBeforeCurrentGameState != 0) {
+        if ((data.gameType != GameTypes.PLAYOFF || !Rules.league.enableAddingTimeInCurrentStateForPlayoffs) && data.timeBeforeCurrentGameState != 0) {
             data.addTimeInCurrentState();
         }
         data.whenCurrentGameStateBegan = data.getTime();
