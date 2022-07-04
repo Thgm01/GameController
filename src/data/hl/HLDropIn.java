@@ -13,5 +13,7 @@ public class HLDropIn extends HL
         leagueDirectory = "hl_dropin";
         /** If true, the drop-in player competition is active */
         dropInPlayerMode = true;
+        /** Drop in */
+        leagueName = "HL Drop-in";
     }
 }
