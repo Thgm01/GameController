@@ -285,10 +285,7 @@ public class GameController {
 
         //ui
         ActionBoard.init();
-        Log.state(data, Teams.getNames(false)[data.team[0].teamNumber]
-                + " (" + data.team[0].teamColor
-                + ") vs " + Teams.getNames(false)[data.team[1].teamNumber]
-                + " (" + data.team[1].teamColor + ")");
+        Log.state(data, data.team[0].getName() + " (" + data.team[0].teamColor + ") vs " + data.team[1].getName() + " (" + data.team[1].teamColor + ")");
 
 
         boolean isSim = Rules.league.leagueDirectory.equals("hl_sim");
